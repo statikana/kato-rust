@@ -4,7 +4,7 @@ It doesn't run right now. See my python kato implementation for something which 
 
 TODO:
 
-- Finish parser visitor (50%)
+- Finish parser visitor (50%), need to update to a changed AST format
 - Implement matrix syntax (immutable)
 - Determine and implement internal type system (statically allocated [i32, immut objects: stack] vs dynamically allocated [most objects: heap])
 - Develop basic std library for dynamically allocated objects like matrices, mutable Strings, etc.

@@ -8,6 +8,7 @@ use generated::katovisitor::KatoVisitor;
 mod datatype;
 mod visitor;
 mod ast;
+mod std;
 
 
 fn main() {
@@ -17,9 +18,9 @@ fn main() {
     let token_stream = CommonTokenStream::new(lexer);
     let mut parser = generated::katoparser::KatoParser::new(token_stream);
 
-    let mut visitor = visitor::ASTVisitor {temp_result: Box::new(ast::ASTNode::default())};
+    let mut visitor = visitor::ASTVisitor {temp_result: Box::new(ast::ASTNode::Null)};
     let start = parser.program().unwrap();
-    let _tree = visitor.visit_program(&start);
+    let tree = visitor.visit_program(&start);
 
 
 

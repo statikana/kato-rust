@@ -1,42 +1,59 @@
-pub enum ASTNodeKind {
+use crate::datatype::Value;
+use crate::std::*;
+
+
+pub enum StaticLiteral {
+    Int32(Value<Int32>),
+    Int64(Value<Int64>),
+}
+
+pub enum ASTNode {
     Null,
-    Scope,
-    VarDef,
-    FuncDef,
-    FuncCall,
-        // ExprCall,
-    Variable,
-        // ExprVar,
-    Literal,
-        // ExprLiteral,
-        // ExprScope,
-    ArithMul,
-    ArithDiv,
-        // ExprMulDiv,
-    ArithAdd,
-    ArithSub,
-        // ExprAddSub,
-    Paren,
-        // ExprParen,
-    IfElseThen,
-    Return_,
-    Emit, 
-}
 
-pub struct ASTNode {
-    pub kind: ASTNodeKind,
-    pub data: Vec<ASTNode>,
-    pub id: Option<String> // used for things which have an identifier in the scope which needs to be known to the executor (like variables, functions, etc.)
-}
+    StaticLiteral(Box<StaticLiteral>),
 
-impl Default for ASTNode {
-    // Creates a ASTNode with ASTNodeKind::Null and data: vec![] with no id
-    fn default() -> ASTNode {
-        ASTNode {
-            kind: ASTNodeKind::Null,
-            data: vec![],
-            id: None
-        }
+    Scope {
+        statements: Vec<ASTNode>,
+    },
+
+    VarGet {
+        name: String,
+    },
+
+    VarDef {
+        name: String,
+        value: Box<ASTNode>
+    },
+
+    FuncDef {
+        name: String,
+        params: Vec<ASTNode>,
+        body: Box<ASTNode>,
+    },
+
+
+    FuncCall {
+        name: String,
+        args: Vec<ASTNode>,
+    },
+
+    BinaryOp {
+        op: String,
+        left: Box<ASTNode>,
+        right: Box<ASTNode>,
+    },
+
+    IfThenElse {
+        condition: Box<ASTNode>,
+        then: Box<ASTNode>, 
+        else_: Box<ASTNode>
+    },
+
+    Return_ {
+        value: Option<Box<ASTNode>>
+    },
+
+    Emit {
+        value: Box<ASTNode>
     }
 }
-

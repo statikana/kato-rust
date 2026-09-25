@@ -160,4 +160,9 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
 
     // auto visit_literal
 
+    fn visit_LiteralBoolean(&mut self, ctx: &LiteralBooleanContext<'input>) -> Self::Return {
+        let text = ctx.get_text();
+        let value: bool = text == String::from("true");
+        Result::new( ASTNode { kind: ast::ASTNodeKind::Literal, data: (), id: () })
+    }
 }
