@@ -1,0 +1,12 @@
+[package]
+name = "core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+generated={ path="../generated" }
+antlr-rust="0.3.0-beta"
+
+[[bin]]
+name="kato-rust"
+path="src/main.rs"

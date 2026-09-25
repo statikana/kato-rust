@@ -1,0 +1,32 @@
+{
+    /.. Implemented types:
+        Integer
+        Number (float)
+        String: (" ... ")
+        Bool: true / false
+        Array: [ ... ]
+
+        Everything is weakly typed ../
+
+    let a = {
+        let g = 13;
+        let b = {
+            let p = 2;
+            emit g + p;
+        };
+        emit b - g; /.. graaahhh!!! \n hello! test test test ../
+    };
+
+    func something(g, v, q) {
+        return g + v + q + a;
+    }
+
+    let g = 3;
+
+    let array = [
+        1, 2, 3, 4, 5, {
+            1, 2, 3
+        }
+    ];
+    emit array;
+};
