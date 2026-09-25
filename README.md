@@ -1,5 +1,17 @@
 # Kato-Rust
 
+It doesn't run right now. See my python kato implementation for something which does run.
+
+TODO:
+
+- Finish parser visitor (50%)
+- Implement matrix syntax (immutable)
+- Determine and implement internal type system (statically allocated [i32, immut objects: stack] vs dynamically allocated [most objects: heap])
+- Develop basic std library for dynamically allocated objects like matrices, mutable Strings, etc.
+- Syntax highlighter?
+- More syntax options (sugar)
+
+
 Running:
 
 1. Install the deps:
