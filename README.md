@@ -11,7 +11,6 @@ TODO:
 - Syntax highlighter?
 - More syntax options (sugar)
 
-
 Running:
 
 1. Install the deps:
