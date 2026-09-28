@@ -27,14 +27,15 @@ expr
 
 variable: ID;
 
-control: if_then_else | return_ | emit_;
-if_then_else: 'if' '(' condition=expr ')' then=scope ('else' else_=scope)?;
-return_: ('return' | ('return ' expr));
-emit_: 'emit ' expr;
+control: condition | exit | emit;
+condition: 'if' '(' case=expr ')' yes=scope ('else' no=scope)?;
+exit: 'exit';
+emit: 'emit ' expr;
 
 literal
-    : sign=('+' | '-')? ((left=NUMBER+ '.' right=NUMBER*) | left=NUMBER* '.' right=NUMBER+) #LiteralNumber
-    | NUMBER+ #LiteralInteger
+    : sign=('+' | '-')? (left=NUMBER+ '.' right=NUMBER*) #LiteralNumberLeft
+    | sign=('+' | '-')? (left=NUMBER* '.' right=NUMBER+) #LiteralNumberRight
+    | sign=('+' | '-')? rest=NUMBER+ #LiteralInteger
     | ('true' | 'false') #LiteralBoolean
     | STRING #LiteralString
     ;

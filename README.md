@@ -1,6 +1,6 @@
 # Kato-Rust
 
-It doesn't run right now. See my python kato implementation for something which does run.
+It doesn't run right (yet). See my python kato implementation for something which does run.
 
 TODO:
 
@@ -23,4 +23,4 @@ Running:
     - Run the antlr4-complete jar: `java -jar antlr4/antlr-X-X-XXX-SNAPSHOT-complete.jar Kato.g4 -o generated/src -Dlanguage=Rust -visitor`
     - Fix managable errors in generated code: `cargo fix --lib --allow-dirty` (make sure you've got cargo on nightly rust like [this](https://doc.rust-lang.org/edition-guide/editions/transitioning-an-existing-project-to-a-new-edition.html))
     - `cargo build`
-    - `cargo run` to run the executor on, by default, `input.txt`. This can just be changed in `core/src/main.rs` 
+    - `cargo run` to run the executor on, by default, `input.txt`. This can just be changed in `core/src/main.rs`

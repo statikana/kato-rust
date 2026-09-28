@@ -1,5 +1,5 @@
 #![feature(generic_const_exprs)]
-
+#![feature(core_float_math)]
 
 use antlr_rust::InputStream;
 use antlr_rust::common_token_stream::CommonTokenStream;
@@ -8,7 +8,8 @@ use generated::katovisitor::KatoVisitor;
 mod datatype;
 mod visitor;
 mod ast;
-mod std;
+mod stdt;
+mod mem;
 
 
 fn main() {
