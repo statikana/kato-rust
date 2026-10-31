@@ -1,188 +1,168 @@
+use std::rc::Rc;
 
-
-use core::f64::math::powi;
-
-use antlr_rust::tree::ParseTree;
-use antlr_rust::token::*;
+use antlr_rust::token::Token;
+use antlr_rust::tree::{ Tree, ParseTree };
 use antlr_rust::tree::ParseTreeVisitorCompat;
 use generated::katovisitor::*;
 use generated::katoparser::*;
 
-use crate::ast::*;
-use crate::datatype::{ Value, Bounded };
-use crate::stdt;
+use crate::ast::BinaryOperator::*;
+use crate::ast::UrnaryOperator::*;
+use crate::ast::{ Node, Data, Span, Scope };
 
-type Result = Box<ASTNode>;
+
+type R = Box<Node>;
+
+
+fn get_span<'input>(ctx: &impl KatoParserContext<'input>) -> Span {
+    Span { start: ctx.start().get_start() as u32, end: ctx.stop().get_stop() as u32 }
+}
+// prints the rule being visited, its span, and its source text (debug builds only)
+macro_rules! debug_visit {
+    ($name:expr, $ctx:expr) => {
+        if cfg!(debug_assertions) {
+            let span = get_span($ctx);
+            eprintln!("[visit] {:<20} span={}..{} text={:?}", $name, span.start, span.end, $ctx.get_text());
+        }
+    };
+}
+
+impl Default for R {
+    fn default() -> Self {
+        Box::new(Node{ data: Data::Integer(69), span: Span{ start: 0, end: 1 }})
+    }
+}
 
 pub struct ASTVisitor {
-    pub temp_result: Result // stores the result of the most recent visit, instead of having functions do regular returns. used by antlr4rust, not me.
+    pub temp_result: R // stores the result of the most recent visit, instead of having functions do regular returns. used by antlr4rust, not me.
+} impl ASTVisitor {
+    fn get<'input>(&mut self, x: &Option<Rc<impl KatoParserContext<'input>>>) -> R {
+        self.visit(x.as_ref().unwrap().as_ref())
+    }
+
 }
 
 impl<'input> ParseTreeVisitorCompat<'input> for ASTVisitor {
-    type Return = Result; // each function returns this value
+    type Return = R; // each function returns this value
     type Node = KatoParserContextType; // each node is represented as this
     fn temp_result(&mut self) -> &mut Self::Return {
         &mut self.temp_result
     }
 }
 
-// We use the KatoVisitorCompat trait instead of KatoVisitor so we can return values from functions
 impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
 
-    fn visit_program(&mut self, ctx: &ProgramContext<'input>) -> Self::Return {
-        let result = self.visit(ctx.scope().unwrap().as_ref());
-        Result::new(*result)
-    }    
-
     fn visit_scope(&mut self, ctx: &ScopeContext<'input>) -> Self::Return {
-        let statements: Vec<ASTNode> = ctx
-            .statement_all()
-            .iter()
-            .map(|statement| *self.visit(statement.as_ref()))
-            .collect();
-        Result::new(
-            ASTNode::Scope(IScope{ statements })
-        )
+        debug_visit!("visit_scope", ctx);
+        let mut results = vec![];
+        for expr in ctx.expr_all() {
+            let result = *self.visit(expr.as_ref());
+            results.push(result);
+        }
+        let data = Data::Scope( Scope { statements: results } );
+        
+        R::new(Node{ data, span: get_span(ctx) })
     }
 
-    // skip visit_statement, will just visit child.
-
-    fn visit_varDefinition(&mut self, ctx: &generated::katoparser::VarDefinitionContext<'input>) -> Self::Return {
-        let name = String::from(ctx.variable().unwrap().get_text());
-        let value = self.visit(ctx.expr().unwrap().as_ref());
-        Result::new(
-            ASTNode::Define(IDefine{ name, value })
-        )
+    fn visit_expr_out(&mut self, ctx: &Expr_outContext<'input>) -> Self::Return {
+        debug_visit!("visit_expr_out", ctx);
+        let data = Data::Null();
+        println!("OUT: '{:?}'", *self.get(&ctx.term()));
+        R::new(Node{ data, span: get_span(ctx)})
     }
 
-    fn visit_funcDefinition(&mut self, ctx: &FuncDefinitionContext<'input>) -> Self::Return {
-        let variables = ctx.variable_all();
-        let name = variables[0].as_ref().get_text();
-        let args = variables[1..].iter().map(
-            |arg| arg.as_ref().get_text()
-        ).collect();
-        let body_node = *self.visit(ctx.scope().unwrap().as_ref());
-        if let ASTNode::Scope( iscope ) = body_node {
-            let body = Box::new(iscope);
-            let value = Box::new(ASTNode::Function(IFunction { args, body }));
-            Result::new(
-                ASTNode::Define(IDefine { name, value })
-            )
+    fn visit_expr_term(&mut self, ctx: &Expr_termContext<'input>) -> Self::Return {
+        debug_visit!("visit_expr_term", ctx);
+        self.get(&ctx.term()) // relinquish
+    }
+
+    fn visit_term_literal(&mut self, ctx: &Term_literalContext<'input>) -> Self::Return {
+        debug_visit!("visit_term_literal", ctx);
+        self.get(&ctx.literal()) // relinquish
+    }
+
+    fn visit_term_mul_div(&mut self, ctx: &Term_mul_divContext<'input>) -> Self::Return {
+        debug_visit!("visit_term_mul_div", ctx);
+        let lhs = self.get(&ctx.lhs);
+        let rhs = self.get(&ctx.rhs);
+
+
+        // try to get child at index 1 (should be the operator)
+        // if it succeeds, return the resulting bin operation
+        if let Some(op_child) = ctx.get_child(1) {
+            let op = match op_child.get_text().as_str() {
+                "*" => Mul,
+                "/" => Div,
+                _ => panic!("Unexpected operator for MUL/DIV")
+            };
+            R::new(Node { data: Data::BinOperation { op, lhs, rhs }, span: get_span(ctx) })
         } else {
-            panic!("expected ASTNode::Scope from visiting scope of function {} but got {} instead", name, body_node)
+            panic!("Bigggg error")
         }
     }
 
-    fn visit_ExprCall(&mut self, ctx: &ExprCallContext<'input>) -> Self::Return {
-        let exprs = ctx.expr_all();
-        let called = self.visit(exprs[0].as_ref());
-        let args: Vec<ASTNode> = exprs[1..].iter().map(
-            |expr| *self.visit(expr.as_ref())
-        ).collect();
-        Result::new(ASTNode::Call( ICall { called, args } ))
-    }
+    fn visit_term_add_sub(&mut self, ctx: &Term_add_subContext<'input>) -> Self::Return {
+        debug_visit!("visit_term_add_sub", ctx);
+        let lhs = self.get(&ctx.lhs);
+        let rhs = self.get(&ctx.rhs);
 
-    fn visit_ExprVar(&mut self, ctx: &ExprVarContext<'input>) -> Self::Return {
-        let name = ctx.variable().unwrap().get_text();
-        Result::new(ASTNode::Get( IGet { name }))
-    }
-
-    fn visit_ExprLiteral(&mut self, ctx: &ExprLiteralContext<'input>) -> Self::Return {
-        self.visit(ctx.literal().unwrap().as_ref())
-    }
-
-    // skip visit expr literal -- just visit the child.
-
-    fn visit_ExprMulDiv(&mut self, ctx: &ExprMulDivContext<'input>) -> Self::Return {
-        let op_string = (ctx.op.as_ref().unwrap()).get_text(); // since its a one-length str
-        let op = match op_string {
-            "*" => ASTOp::Mul,
-            "/" => ASTOp::Div,
-            other => panic!("Expected * or / as ExprMulDivContext.op text, got {}", other)
-        };
-        let lhs = self.visit(ctx.lhs.as_ref().unwrap().as_ref());
-        let rhs = self.visit(ctx.rhs.as_ref().unwrap().as_ref());
-        Result::new(ASTNode::BinaryOp(IBinaryOp { op: op, lhs, rhs }))        
-    }
-
-    fn visit_ExprAddSub(&mut self, ctx: &ExprAddSubContext<'input>) -> Self::Return {
-        let op_string = (ctx.op.as_ref().unwrap()).get_text(); // since its a one-length str
-        let op = match op_string {
-            "+" => ASTOp::Add,
-            "-" => ASTOp::Sub,
-            other => panic!("Expected + or - as ExprAddSubContext.op text, got {}", other)
-        };
-        let lhs = self.visit(ctx.lhs.as_ref().unwrap().as_ref());
-        let rhs = self.visit(ctx.rhs.as_ref().unwrap().as_ref());
-        Result::new(ASTNode::BinaryOp(IBinaryOp { op, lhs, rhs }))
-    }
-
-    // auto visit_ExprParen
-
-    fn visit_variable(&mut self, ctx: &VariableContext<'input>) -> Self::Return {
-        let name = ctx.ID().unwrap().get_text();
-        Result::new(ASTNode::Get(IGet { name }))
-    }
-
-    // skip visit_control, will just visit children
-
-    fn visit_condition(&mut self, ctx: &ConditionContext<'input>) -> Self::Return {
-        let case = self.visit(ctx.case.as_ref().unwrap().as_ref());
-
-        let yes_node = self.visit(ctx.yes.as_ref().unwrap().as_ref());
-        let yes: Box<IScope>;
-        if let ASTNode::Scope( iscope ) = *yes_node {
-            yes = Box::new(iscope);
+        if let Some(op_child) = ctx.get_child(1) {
+            let op = match op_child.get_text().as_str() {
+                "+" => Add,
+                "-" => Sub,
+                _ => panic!("Unexpected operator for ADD/SUB")
+            };
+            R::new(Node { data: Data::BinOperation { op, lhs, rhs }, span: get_span(ctx) })
         } else {
-            panic!("Expected ASTNode::Scope from visiting ConditionContext.yes")
+            panic!("Bigggg error")
         }
-
-        let no: Box<IScope>;
-        if ctx.no.is_none() {
-            no = Box::new(IScope { statements: vec![] });
-        } else {
-            let no_node = self.visit(ctx.no.as_ref().unwrap().as_ref());
-            if let ASTNode::Scope( iscope ) = *no_node {
-                no = Box::new(iscope);
-            } else {
-                panic!("Expected ASTNode::Scope from visiting ConditionContext.no")
-            }
-        }
-        Result::new(ASTNode::Condition(ICondition { case, yes, no }))
     }
 
-    fn visit_exit(&mut self, ctx: &ExitContext<'input>) -> Self::Return {
-        Result::new(ASTNode::Exit(IExit {  }))
+    fn visit_term_paren(&mut self, ctx: &Term_parenContext<'input>) -> Self::Return {
+        debug_visit!("visit_term_paren", ctx);
+        self.get(&ctx.term()) // relinquish
     }
 
-    fn visit_emit(&mut self, ctx: &EmitContext<'input>) -> Self::Return {
-        let value = self.visit(ctx.expr().unwrap().as_ref());
-        Result::new(ASTNode::Emit(IEmit { value }))
+    fn visit_term_neg(&mut self, ctx: &Term_negContext<'input>) -> Self::Return {
+        debug_visit!("visit_term_neg", ctx);
+        let subject = self.get(&ctx.term());
+        let op = Negate;
+        R::new(Node { data: Data::UrnaryOperation { op: Negate, subject: subject }, span: get_span(ctx) })
     }
 
-    // auto visit_literal
-
-    fn visit_LiteralBoolean(&mut self, ctx: &LiteralBooleanContext<'input>) -> Self::Return {
-        let text = ctx.get_text();
-        let state: bool = text == String::from("true");
-
-        let value = Value::new(state);
-        // chain:
-        // AST Node -> Value -> Static -> Boolean -> Container of 1 byte -> data -> state
-        Result::new(ASTNode::Value(ASTValue::Static(StaticLiteral::Bool(value))))
+    fn visit_value_boolean(&mut self, ctx: &Value_booleanContext<'input>) -> Self::Return {
+        debug_visit!("visit_value_boolean", ctx);
+        self.get(&ctx.boolean()) // relinqish
     }
 
-    fn visit_LiteralInteger(&mut self, ctx: &LiteralIntegerContext<'input>) -> Self::Return {
-        let text = ctx.get_text();
-        let integer = text.parse::<i64>().unwrap();
+    fn visit_value_numeric(&mut self, ctx: &Value_numericContext<'input>) -> Self::Return {
+        debug_visit!("visit_value_numeric", ctx);
+        self.get(&ctx.numeric()) // relinqish
+    }
 
-        // Int32 when it fits in bounds, Int64 otherwise
-        let small = i32::try_from(integer).ok().filter(|n| stdt::Int32::in_bounds(*n));
-        let value = match small {
-            Some(small) => ASTValue::Static(StaticLiteral::Int32(Value::new(small))),
-            None => ASTValue::Static(StaticLiteral::Int64(Value::new(integer)))
-        };
+    fn visit_boolean_true(&mut self, ctx: &Boolean_trueContext<'input>) -> Self::Return {
+        debug_visit!("visit_boolean_true", ctx);
+        let data = Data::Boolean(true);
+        R::new(Node{ data, span: get_span(ctx) })
+    }
 
-        Result::new(ASTNode::Value(value))
+    fn visit_boolean_false(&mut self, ctx: &Boolean_falseContext<'input>) -> Self::Return {
+        debug_visit!("visit_boolean_false", ctx);
+        let data = Data::Boolean(false);
+        R::new(Node{ data, span: get_span(ctx) })
+    }
+
+    fn visit_numeric_integer(&mut self, ctx: &Numeric_integerContext<'input>) -> Self::Return {
+        debug_visit!("visit_numeric_integer", ctx);
+        type IntT = i128; // uhh seems odd
+        let data = Data::Integer(ctx.get_text().parse::<IntT>().unwrap());
+        R::new(Node { data, span: get_span(ctx) })
+    }
+
+    fn visit_numeric_real(&mut self, ctx: &Numeric_realContext<'input>) -> Self::Return {  
+        debug_visit!("visit_numeric_real", ctx);
+        type FloatT = f64; // ...
+        let data = Data::Float(ctx.get_text().parse::<FloatT>().unwrap());
+        R::new(Node { data, span: get_span(ctx) })
     }
 }

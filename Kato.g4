@@ -1,53 +1,49 @@
 grammar Kato;
 
-program: scope;
+scope: '{' (expr ';')+ '}';
 
-scope: '{' statement* '}';
-
-statement
-    : ((varDefinition | funcDefinition | expr | control) ';')
-    | COMMENT;
-
-// variable and function definitions
-varDefinition: 'let ' variable '=' expr;
-funcDefinition: 'func ' variable '(' (variable (',' variable)* ','?)? ')' scope;
-
-// expressions
 expr
-    : expr '(' (expr (',' expr)* ','?)? ')' #ExprCall
-    | variable  #ExprVar
-    | literal   #ExprLiteral
-    | scope     #ExprScope
-    // | '[' (expr (',' expr)*)? ']' #ExprArray
-
-    | lhs=expr op=('*' | '/') rhs=expr  #ExprMulDiv
-    | lhs=expr op=('+' | '-') rhs=expr  #ExprAddSub
-    | '(' expr ')'                      #ExprParen
+    : 'out' '(' term ')'     # expr_out // debugging
+    | term          # expr_term
     ;
 
-variable: ID;
-
-control: condition | exit | emit;
-condition: 'if' '(' case=expr ')' yes=scope ('else' no=scope)?;
-exit: 'exit';
-emit: 'emit ' expr;
+term
+    : literal                 # term_literal
+    | lhs=term (MUL | DIV) rhs=term # term_mul_div
+    | lhs=term (ADD | SUB) rhs=term # term_add_sub
+    | PAREN_L term PAREN_R  # term_paren
+    | '-' term  # term_neg
+    ;
 
 literal
-    : sign=('+' | '-')? (left=NUMBER+ '.' right=NUMBER*) #LiteralNumberLeft
-    | sign=('+' | '-')? (left=NUMBER* '.' right=NUMBER+) #LiteralNumberRight
-    | sign=('+' | '-')? rest=NUMBER+ #LiteralInteger
-    | ('true' | 'false') #LiteralBoolean
-    | STRING #LiteralString
+    : boolean       # value_boolean
+    | numeric       # value_numeric
     ;
 
+boolean
+    : TRUE          # boolean_true
+    | FALSE         # boolean_false
+    ;
 
-// Tokens
-ID: CHAR (CHAR | NUMBER)*;
-NUMBER: [0-9];
+numeric
+    : INTEGER       # numeric_integer
+    | REAL          # numeric_real
+    ;
 
-fragment CHAR: [a-zA-Z];
-STRING: '"' .*? '"';
+// END RULES
+
+// START LEXER TOKENS
+
+TRUE:       'true';
+FALSE:      'false';
+INTEGER:    [0-9]+;
+REAL:       [0-9]+ '.' [0-9]+; // must have something on both sides. No 1. or .9 weirdness.
+
+MUL:    '*';
+DIV:    '/';
+ADD:    '+';
+SUB:    '-';
+PAREN_L: '(';
+PAREN_R: ')';
+
 WS: [ \t\n] -> skip;
-
-COMMENT: '/..' .*? '../' -> skip;
-
