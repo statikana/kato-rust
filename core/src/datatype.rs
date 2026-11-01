@@ -1,7 +1,6 @@
 use std::fmt;
 
 use crate::ast::{ BinaryOperator, UrnaryOperator };
-use crate::util::typename;
 
 mod integer;
 mod float;
@@ -95,7 +94,7 @@ impl HasLayout for Type {
             Type::Float(t) => t.layout(target),
             Type::Ptr(t) => t.layout(target),
             Type::Matrix(t) => t.layout(target),
-            other => panic!("Unknown memory layout for type '{}'", typename(other))
+            _other => panic!("Unknown memory layout")
         }
     }
 }

@@ -9,12 +9,11 @@ use generated::katovisitor::KatoVisitorCompat;
 mod ast;
 mod ast_visitor;
 
-mod typing;
+mod typecheck;
 
 mod datatype;
 
 mod ast_debug;
-mod util;
 
 fn main() {
     let mut file = File::open("./input.txt").unwrap();
@@ -32,8 +31,11 @@ fn main() {
     let token_stream = CommonTokenStream::new(lexer);
     let mut parser = generated::katoparser::KatoParser::new(token_stream);
 
-    let mut astv = ast_visitor::ASTVisitor {temp_result: Box::new(ast::Node{ data: ast::NodeData::Unit(), span: ast::Span{ start: 0, end: 1 }})};
+    let mut astv = ast_visitor::ASTVisitor {temp_result: Box::new(ast::Node::new(ast::Unit, ast::Span{ start: 0, end: 1 }))};
     let start = parser.scope().unwrap();
     let result = astv.visit_scope(&start);
-    println!("{:?}", typing::typecheck(*result).unwrap());
+    let typed = typecheck::typecheck(&result).unwrap();
+    for statement in &typed.children {
+        println!("{:?}", statement);
+    }
 }
