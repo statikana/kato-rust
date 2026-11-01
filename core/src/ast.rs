@@ -1,19 +1,17 @@
 #[derive(Clone, Copy, Debug)]
 pub struct Span { pub start: u32, pub end: u32 }
 
-pub struct Scope   { pub statements: Vec<Node> }
+pub struct Node { pub data: NodeData, pub span: Span }
 
-pub struct Node { pub data: Data, pub span: Span }
-
-pub enum Data {
-    Scope(Scope),
-    BinOperation { op: BinaryOperator, lhs: Box<Node>, rhs: Box<Node> },
+pub enum NodeData {
+    Scope{ statements: Vec<Node> },
+    BinaryOperation { op: BinaryOperator, lhs: Box<Node>, rhs: Box<Node> },
     UrnaryOperation {op: UrnaryOperator, subject: Box<Node> },
     Out(Box<Node>),
     Boolean(bool),
     Integer(i128),
     Float(f64),
-    Null()
+    Unit()
 }
 
 #[derive(Clone, Copy, Debug)]

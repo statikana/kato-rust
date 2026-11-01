@@ -1,50 +1,99 @@
+use crate::ast::{ BinaryOperator, UrnaryOperator };
 use crate::util::typename;
+
+mod integer;
+mod float;
+mod ptr;
+mod matrix;
+
+pub use integer::IntegerType;
+pub use float::FloatType;
+pub use ptr::PtrType;
+pub use matrix::MatrixType;
 
 
 /// represents rules for how an object must be treated in memory
-struct Layout {
+pub struct Layout {
     /// size of the object
-    bytes: usize,
+    pub bytes: usize,
 
     /// necessary alignment of the address at which its stored. for small objects, this is usually just `bytes`
-    align: usize,
+    pub align: usize,
+}
+
+impl Layout {
+    /// a layout aligned to its own size
+    pub fn primitive(bytes: usize) -> Layout {
+        Layout{ bytes, align: bytes }
+    }
 }
 
 /// info about target system
-struct Target {
+pub struct Target {
     /// either `ptr_size=4` (32-bit systems) or `ptr_size=8` (64-bit systems)
-    ptr_size: usize
+    pub ptr_size: usize
 }
 
-enum Type {
+#[derive(Clone, Debug)]
+pub enum Type {
     Unit,
-    Bool,
-    Nat { nbytes: usize },
-    Int { signed: bool, nbytes: usize },
-    Float { nbytes: usize },
-    Ptr(Box<Type>),
-
-    Matrix { shape: Vec<usize>, dtype: Box<Type> },
+    Boolean,
+    Integer(IntegerType),
+    Float(FloatType),
+    Ptr(PtrType),
+    Matrix(MatrixType),
 }
 
-/// gets the layout of a `Type`. returns `None` if it has no layout or is too large for a stack (use dynamic)
-fn layout_of(t: &Type, target: &Target) -> Option<Layout> {
-    let primitive = |n| Some(Layout{ bytes: n, align: n });
-    match t {
-        Type::Unit => Some(Layout{ bytes: 0, align: 1 }),
-        Type::Bool => primitive(1),
-        Type::Nat{ nbytes } => primitive(*nbytes),
-        Type::Int{ signed: _, nbytes } | Type::Float{ nbytes } => primitive(*nbytes),
-        Type::Ptr(_) => primitive(target.ptr_size),
+/// arithmetic rules for a type. `None` means the operation isn't supported
+pub trait Numeric {
+    /// the type of `op self`
+    fn unary_result(&self, op: UrnaryOperator) -> Option<Type>;
+    /// the type of `self op rhs`
+    fn binary_result(&self, op: BinaryOperator, rhs: &Type) -> Option<Type>;
+}
 
-        Type::Matrix { shape, dtype } => {
-            let dtype_layout = layout_of(&dtype, target)?;
-            let n_elem = shape.iter().try_fold(1 as usize, |item, &current| current.checked_mul(item))?;
-            let size = n_elem.checked_mul(dtype_layout.bytes)?;
-            Some(Layout{ bytes: size, align: dtype_layout.align })
-        },
+/// memory rules for a type
+pub trait HasLayout {
+    /// the layout of the type on `target`. returns `None` if it has no layout or is too large for a stack (use dynamic)
+    fn layout(&self, target: &Target) -> Option<Layout>;
+}
 
+impl Numeric for Type {
+    fn unary_result(&self, op: UrnaryOperator) -> Option<Type> {
+        match self {
+            Type::Unit | Type::Boolean => None,
+            Type::Integer(t) => t.unary_result(op),
+            Type::Float(t) => t.unary_result(op),
+            Type::Ptr(t) => t.unary_result(op),
+            Type::Matrix(t) => t.unary_result(op),
+        }
+    }
+
+    fn binary_result(&self, op: BinaryOperator, rhs: &Type) -> Option<Type> {
+        match (self, rhs) {
+            (Type::Matrix(t), _) => t.binary_result(op, rhs),
+            // scalar op matrix: broadcast the scalar over the matrix's elements
+            (_, Type::Matrix(m)) => Some(m.with_dtype(self.binary_result(op, &m.dtype)?)),
+
+            (Type::Unit | Type::Boolean, _) => None,
+            (Type::Integer(t), _) => t.binary_result(op, rhs),
+            (Type::Float(t), _) => t.binary_result(op, rhs),
+            (Type::Ptr(t), _) => t.binary_result(op, rhs),
+        }
+    }
+}
+
+impl HasLayout for Type {
+    fn layout(&self, target: &Target) -> Option<Layout> {
         #[allow(unreachable_patterns)]
-        other => panic!("Unknown memory layout for type '{}'", typename(other))
+        match self {
+            Type::Unit => Some(Layout{ bytes: 0, align: 1 }),
+            Type::Boolean => Some(Layout::primitive(1)),
+            Type::Integer(t) => t.layout(target),
+            Type::Float(t) => t.layout(target),
+            Type::Ptr(t) => t.layout(target),
+            Type::Matrix(t) => t.layout(target),
+            other => panic!("Unknown memory layout for type '{}'", typename(other))
+        }
     }
 }

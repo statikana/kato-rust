@@ -1,74 +1,74 @@
 use std::fmt;
 
-use crate::ast::{ Node, Data, Scope };
+use crate::ast::{ Node, NodeData };
+use crate::util::typename;
 
 // manual Debug impls for the AST, kept out of ast.rs so the type definitions stay readable.
-// built on the std debug builders, so `{:#?}` gives an indented tree.
-
-impl fmt::Debug for Scope {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_list().entries(&self.statements).finish()
-    }
-}
 
 impl fmt::Debug for Node {
     // the span is folded into the node's label, e.g. `Integer@3..4(5)`
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let label = format!("{}@{}..{}", self.data.name(), self.span.start, self.span.end);
+        #[allow(unreachable_patterns)]
         match &self.data {
-            Data::Scope(scope) => f.debug_tuple(&label).field(scope).finish(),
-            Data::BinOperation { op, lhs, rhs } => f.debug_struct(&label)
+            NodeData::Scope { statements } => f.debug_tuple(&label).field(statements).finish(),
+            NodeData::BinaryOperation { op, lhs, rhs } => f.debug_struct(&label)
                 .field("op", op)
                 .field("lhs", lhs)
                 .field("rhs", rhs)
                 .finish(),
-            Data::UrnaryOperation { op, subject } => f.debug_struct(&label)
+            NodeData::UrnaryOperation { op, subject } => f.debug_struct(&label)
                 .field("op", op)
                 .field("subject", subject)
                 .finish(),
-            Data::Out(value) => f.debug_tuple(&label).field(value).finish(),
-            Data::Boolean(b) => f.debug_tuple(&label).field(b).finish(),
-            Data::Integer(i) => f.debug_tuple(&label).field(i).finish(),
-            Data::Float(x) => f.debug_tuple(&label).field(x).finish(),
-            Data::Null() => f.write_str(&label),
+            NodeData::Out(value) => f.debug_tuple(&label).field(value).finish(),
+            NodeData::Boolean(b) => f.debug_tuple(&label).field(b).finish(),
+            NodeData::Integer(i) => f.debug_tuple(&label).field(i).finish(),
+            NodeData::Float(x) => f.debug_tuple(&label).field(x).finish(),
+            NodeData::Unit() => f.write_str(&label),
+            _ => f.write_str(&label),
         }
     }
 }
 
-impl fmt::Debug for Data {
+impl fmt::Debug for NodeData {
     // printed without a span; wrap in a Node to get positions
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        #[allow(unreachable_patterns)]
         match self {
-            Data::Scope(scope) => f.debug_tuple("Scope").field(scope).finish(),
-            Data::BinOperation { op, lhs, rhs } => f.debug_struct("BinOperation")
+            NodeData::Scope { statements } => f.debug_tuple("Scope").field(statements).finish(),
+            NodeData::BinaryOperation { op, lhs, rhs } => f.debug_struct("BinaryOperation")
                 .field("op", op)
                 .field("lhs", lhs)
                 .field("rhs", rhs)
                 .finish(),
-            Data::UrnaryOperation { op, subject } => f.debug_struct("UrnaryOperation")
+            NodeData::UrnaryOperation { op, subject } => f.debug_struct("UrnaryOperation")
                 .field("op", op)
                 .field("subject", subject)
                 .finish(),
-            Data::Out(value) => f.debug_tuple("Out").field(value).finish(),
-            Data::Boolean(b) => f.debug_tuple("Boolean").field(b).finish(),
-            Data::Integer(i) => f.debug_tuple("Integer").field(i).finish(),
-            Data::Float(x) => f.debug_tuple("Float").field(x).finish(),
-            Data::Null() => f.write_str("Null"),
+            NodeData::Out(value) => f.debug_tuple("Out").field(value).finish(),
+            NodeData::Boolean(b) => f.debug_tuple("Boolean").field(b).finish(),
+            NodeData::Integer(i) => f.debug_tuple("Integer").field(i).finish(),
+            NodeData::Float(x) => f.debug_tuple("Float").field(x).finish(),
+            NodeData::Unit() => f.write_str("Unit"),
+            _ => f.write_str(&("unknown: ".to_owned() + typename(self))),
         }
-    }
+    } 
 }
 
-impl Data {
+impl NodeData {
     fn name(&self) -> &'static str {
+        #[allow(unreachable_patterns)]
         match self {
-            Data::Scope(_) => "Scope",
-            Data::BinOperation { .. } => "BinOperation",
-            Data::UrnaryOperation { .. } => "UrnaryOperation",
-            Data::Out(_) => "Out",
-            Data::Boolean(_) => "Boolean",
-            Data::Integer(_) => "Integer",
-            Data::Float(_) => "Float",
-            Data::Null() => "Null",
+            NodeData::Scope { .. } => "Scope",
+            NodeData::BinaryOperation { .. } => "BinaryOperation",
+            NodeData::UrnaryOperation { .. } => "UrnaryOperation",
+            NodeData::Out(_) => "Out",
+            NodeData::Boolean(_) => "Boolean",
+            NodeData::Integer(_) => "Integer",
+            NodeData::Float(_) => "Float",
+            NodeData::Unit() => "Unit",
+            _ => typename(self),
         }
     }
 }

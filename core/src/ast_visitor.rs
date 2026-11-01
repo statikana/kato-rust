@@ -8,14 +8,14 @@ use generated::katoparser::*;
 
 use crate::ast::BinaryOperator::*;
 use crate::ast::UrnaryOperator::*;
-use crate::ast::{ Node, Data, Span, Scope };
+use crate::ast::{ Node, NodeData, Span };
 
 
 type R = Box<Node>;
 
 
 fn get_span<'input>(ctx: &impl KatoParserContext<'input>) -> Span {
-    Span { start: ctx.start().get_start() as u32, end: ctx.stop().get_stop() as u32 }
+    Span { start: ctx.start().get_start() as u32, end: ctx.stop().get_stop() as u32 + 1 }
 }
 // prints the rule being visited, its span, and its source text (debug builds only)
 macro_rules! debug_visit {
@@ -29,7 +29,7 @@ macro_rules! debug_visit {
 
 impl Default for R {
     fn default() -> Self {
-        Box::new(Node{ data: Data::Integer(69), span: Span{ start: 0, end: 1 }})
+        Box::new(Node{ data: NodeData::Integer(69), span: Span{ start: 0, end: 1 }})
     }
 }
 
@@ -59,14 +59,13 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
             let result = *self.visit(expr.as_ref());
             results.push(result);
         }
-        let data = Data::Scope( Scope { statements: results } );
-        
+        let data = NodeData::Scope{ statements: results };
         R::new(Node{ data, span: get_span(ctx) })
     }
 
     fn visit_expr_out(&mut self, ctx: &Expr_outContext<'input>) -> Self::Return {
         debug_visit!("visit_expr_out", ctx);
-        let data = Data::Null();
+        let data = NodeData::Unit();
         println!("OUT: '{:?}'", *self.get(&ctx.term()));
         R::new(Node{ data, span: get_span(ctx)})
     }
@@ -95,7 +94,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
                 "/" => Div,
                 _ => panic!("Unexpected operator for MUL/DIV")
             };
-            R::new(Node { data: Data::BinOperation { op, lhs, rhs }, span: get_span(ctx) })
+            R::new(Node { data: NodeData::BinaryOperation { op, lhs, rhs }, span: get_span(ctx) })
         } else {
             panic!("Bigggg error")
         }
@@ -112,7 +111,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
                 "-" => Sub,
                 _ => panic!("Unexpected operator for ADD/SUB")
             };
-            R::new(Node { data: Data::BinOperation { op, lhs, rhs }, span: get_span(ctx) })
+            R::new(Node { data: NodeData::BinaryOperation { op, lhs, rhs }, span: get_span(ctx) })
         } else {
             panic!("Bigggg error")
         }
@@ -127,7 +126,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
         debug_visit!("visit_term_neg", ctx);
         let subject = self.get(&ctx.term());
         let op = Negate;
-        R::new(Node { data: Data::UrnaryOperation { op: Negate, subject: subject }, span: get_span(ctx) })
+        R::new(Node { data: NodeData::UrnaryOperation { op: Negate, subject: subject }, span: get_span(ctx) })
     }
 
     fn visit_value_boolean(&mut self, ctx: &Value_booleanContext<'input>) -> Self::Return {
@@ -142,27 +141,27 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
 
     fn visit_boolean_true(&mut self, ctx: &Boolean_trueContext<'input>) -> Self::Return {
         debug_visit!("visit_boolean_true", ctx);
-        let data = Data::Boolean(true);
+        let data = NodeData::Boolean(true);
         R::new(Node{ data, span: get_span(ctx) })
     }
 
     fn visit_boolean_false(&mut self, ctx: &Boolean_falseContext<'input>) -> Self::Return {
         debug_visit!("visit_boolean_false", ctx);
-        let data = Data::Boolean(false);
+        let data = NodeData::Boolean(false);
         R::new(Node{ data, span: get_span(ctx) })
     }
 
     fn visit_numeric_integer(&mut self, ctx: &Numeric_integerContext<'input>) -> Self::Return {
         debug_visit!("visit_numeric_integer", ctx);
         type IntT = i128; // uhh seems odd
-        let data = Data::Integer(ctx.get_text().parse::<IntT>().unwrap());
+        let data = NodeData::Integer(ctx.get_text().parse::<IntT>().unwrap());
         R::new(Node { data, span: get_span(ctx) })
     }
 
     fn visit_numeric_real(&mut self, ctx: &Numeric_realContext<'input>) -> Self::Return {  
         debug_visit!("visit_numeric_real", ctx);
         type FloatT = f64; // ...
-        let data = Data::Float(ctx.get_text().parse::<FloatT>().unwrap());
+        let data = NodeData::Float(ctx.get_text().parse::<FloatT>().unwrap());
         R::new(Node { data, span: get_span(ctx) })
     }
 }
