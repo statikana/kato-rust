@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::ast::{ BinaryOperator, UrnaryOperator };
 use super::{ Type, Numeric, HasLayout, Layout, Target };
 
@@ -12,5 +14,11 @@ impl Numeric for PtrType {
 impl HasLayout for PtrType {
     fn layout(&self, target: &Target) -> Option<Layout> {
         Some(Layout::primitive(target.ptr_size))
+    }
+}
+
+impl fmt::Display for PtrType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "*{}", self.pointee)
     }
 }

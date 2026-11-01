@@ -9,7 +9,7 @@ use generated::katovisitor::KatoVisitorCompat;
 mod ast;
 mod ast_visitor;
 
-mod typecheck;
+mod typing;
 
 mod datatype;
 
@@ -35,5 +35,5 @@ fn main() {
     let mut astv = ast_visitor::ASTVisitor {temp_result: Box::new(ast::Node{ data: ast::NodeData::Unit(), span: ast::Span{ start: 0, end: 1 }})};
     let start = parser.scope().unwrap();
     let result = astv.visit_scope(&start);
-    println!("{:?}", result)
+    println!("{:?}", typing::typecheck(*result).unwrap());
 }

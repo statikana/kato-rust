@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::ast::{ BinaryOperator, UrnaryOperator };
 use super::{ Type, Numeric, HasLayout, Layout, Target };
 
@@ -33,5 +35,11 @@ impl HasLayout for MatrixType {
         let n_elem = self.shape.iter().try_fold(1 as usize, |item, &current| current.checked_mul(item))?;
         let size = n_elem.checked_mul(dtype_layout.bytes)?;
         Some(Layout{ bytes: size, align: dtype_layout.align })
+    }
+}
+
+impl fmt::Display for MatrixType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}{}", self.shape, self.dtype)
     }
 }

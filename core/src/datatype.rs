@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::ast::{ BinaryOperator, UrnaryOperator };
 use crate::util::typename;
 
@@ -94,6 +96,20 @@ impl HasLayout for Type {
             Type::Ptr(t) => t.layout(target),
             Type::Matrix(t) => t.layout(target),
             other => panic!("Unknown memory layout for type '{}'", typename(other))
+        }
+    }
+}
+
+// compact names, e.g. `i64`, `*f32`, `[2, 3]f64`
+impl fmt::Display for Type {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Type::Unit => f.write_str("unit"),
+            Type::Boolean => f.write_str("bool"),
+            Type::Integer(t) => t.fmt(f),
+            Type::Float(t) => t.fmt(f),
+            Type::Ptr(t) => t.fmt(f),
+            Type::Matrix(t) => t.fmt(f),
         }
     }
 }

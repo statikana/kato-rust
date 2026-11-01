@@ -1,4 +1,5 @@
 use std::cmp::max;
+use std::fmt;
 
 use crate::ast::{ BinaryOperator, UrnaryOperator };
 use super::{ Type, Numeric, HasLayout, Layout, Target };
@@ -30,5 +31,11 @@ impl Numeric for IntegerType {
 impl HasLayout for IntegerType {
     fn layout(&self, _target: &Target) -> Option<Layout> {
         Some(Layout::primitive(self.nbytes))
+    }
+}
+
+impl fmt::Display for IntegerType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}{}", if self.signed { "i" } else { "u" }, self.nbytes * 8)
     }
 }
