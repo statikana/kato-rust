@@ -123,7 +123,6 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
     fn visit_term_neg(&mut self, ctx: &Term_negContext<'input>) -> Self::Return {
         debug_visit!("visit_term_neg", ctx);
         let subject = self.get(&ctx.term());
-        let op = Negate;
         R::new(Node::new(UnaryOperation { op: Negate, subject: subject }, get_span(ctx)))
     }
 
