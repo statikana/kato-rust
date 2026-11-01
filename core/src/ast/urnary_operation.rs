@@ -2,12 +2,12 @@ use std::fmt;
 
 use crate::datatype::{ Type, Numeric };
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ Node, NodeData, Span, UrnaryOperator };
+use super::{ Node, NodeData, Span, UnaryOperator };
 
-pub struct UrnaryOperation { pub op: UrnaryOperator, pub subject: Box<Node> }
+pub struct UnaryOperation { pub op: UnaryOperator, pub subject: Box<Node> }
 
-impl NodeData for UrnaryOperation {
-    fn name(&self) -> &'static str { "UrnaryOperation" }
+impl NodeData for UnaryOperation {
+    fn name(&self) -> &'static str { "UnaryOperation" }
 
     fn children(&self) -> Vec<&Node> {
         vec![&self.subject]
@@ -17,7 +17,7 @@ impl NodeData for UrnaryOperation {
     fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError> {
         let subject = &children[0].dtype;
         subject.unary_result(self.op)
-            .ok_or(TypeError::UnsupportedUrnaryOperation { op: self.op, subject: subject.clone(), span })
+            .ok_or(TypeError::UnsupportedUnaryOperation { op: self.op, subject: subject.clone(), span })
     }
 
     fn fmt_labeled(&self, label: &str, children: &[&dyn fmt::Debug], f: &mut fmt::Formatter<'_>) -> fmt::Result {

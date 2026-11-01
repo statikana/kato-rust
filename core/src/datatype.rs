@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UrnaryOperator };
+use crate::ast::{ BinaryOperator, UnaryOperator };
 
 mod integer;
 mod float;
@@ -48,7 +48,7 @@ pub enum Type {
 /// arithmetic rules for a type. `None` means the operation isn't supported
 pub trait Numeric {
     /// the type of `op self`
-    fn unary_result(&self, op: UrnaryOperator) -> Option<Type>;
+    fn unary_result(&self, op: UnaryOperator) -> Option<Type>;
     /// the type of `self op rhs`
     fn binary_result(&self, op: BinaryOperator, rhs: &Type) -> Option<Type>;
 }
@@ -60,7 +60,7 @@ pub trait HasLayout {
 }
 
 impl Numeric for Type {
-    fn unary_result(&self, op: UrnaryOperator) -> Option<Type> {
+    fn unary_result(&self, op: UnaryOperator) -> Option<Type> {
         match self {
             Type::Unit | Type::Boolean => None,
             Type::Integer(t) => t.unary_result(op),

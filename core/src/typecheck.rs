@@ -1,4 +1,4 @@
-use crate::ast::{ Node, Span, BinaryOperator, UrnaryOperator };
+use crate::ast::{ Node, Span, BinaryOperator, UnaryOperator };
 use crate::datatype::Type;
 
 /// A typed view over a `Node` and its children, produced by `typecheck`
@@ -6,7 +6,7 @@ pub struct TypedNode<'a> { pub node: &'a Node, pub dtype: Type, pub children: Ve
 
 #[derive(Debug)]
 pub enum TypeError {
-    UnsupportedUrnaryOperation { op: UrnaryOperator, subject: Type, span: Span },
+    UnsupportedUnaryOperation { op: UnaryOperator, subject: Type, span: Span },
     UnsupportedBinaryOperation { op: BinaryOperator, lhs: Type, rhs: Type, span: Span },
 }
 

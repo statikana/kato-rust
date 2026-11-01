@@ -7,8 +7,8 @@ use generated::katovisitor::*;
 use generated::katoparser::*;
 
 use crate::ast::BinaryOperator::*;
-use crate::ast::UrnaryOperator::*;
-use crate::ast::{ Node, Span, Scope, BinaryOperation, UrnaryOperation, Boolean, Integer, Float, Unit };
+use crate::ast::UnaryOperator::*;
+use crate::ast::{ Node, Span, Scope, BinaryOperation, UnaryOperation, Boolean, Integer, Float, Unit };
 
 
 type R = Box<Node>;
@@ -124,7 +124,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
         debug_visit!("visit_term_neg", ctx);
         let subject = self.get(&ctx.term());
         let op = Negate;
-        R::new(Node::new(UrnaryOperation { op: Negate, subject: subject }, get_span(ctx)))
+        R::new(Node::new(UnaryOperation { op: Negate, subject: subject }, get_span(ctx)))
     }
 
     fn visit_value_boolean(&mut self, ctx: &Value_booleanContext<'input>) -> Self::Return {

@@ -5,7 +5,7 @@ use crate::datatype::Type;
 
 mod scope;
 mod binary_operation;
-mod urnary_operation;
+mod Unary_operation;
 mod out;
 mod boolean;
 mod integer;
@@ -14,7 +14,7 @@ mod unit;
 
 pub use scope::Scope;
 pub use binary_operation::BinaryOperation;
-pub use urnary_operation::UrnaryOperation;
+pub use Unary_operation::UnaryOperation;
 pub use out::Out;
 pub use boolean::Boolean;
 pub use integer::Integer;
@@ -63,4 +63,4 @@ pub trait NodeData {
 pub enum BinaryOperator { Add, Sub, Mul, Div }
 
 #[derive(Clone, Copy, Debug)]
-pub enum UrnaryOperator { Negate }
+pub enum UnaryOperator { Negate }

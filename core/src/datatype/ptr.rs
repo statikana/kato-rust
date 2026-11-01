@@ -1,13 +1,13 @@
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UrnaryOperator };
+use crate::ast::{ BinaryOperator, UnaryOperator };
 use super::{ Type, Numeric, HasLayout, Layout, Target };
 
 #[derive(Clone, Debug)]
 pub struct PtrType { pub pointee: Box<Type> }
 
 impl Numeric for PtrType {
-    fn unary_result(&self, _op: UrnaryOperator) -> Option<Type> { None }
+    fn unary_result(&self, _op: UnaryOperator) -> Option<Type> { None }
     fn binary_result(&self, _op: BinaryOperator, _rhs: &Type) -> Option<Type> { None }
 }
 

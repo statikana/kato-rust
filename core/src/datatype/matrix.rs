@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UrnaryOperator };
+use crate::ast::{ BinaryOperator, UnaryOperator };
 use super::{ Type, Numeric, HasLayout, Layout, Target };
 
 #[derive(Clone, Debug)]
@@ -14,7 +14,7 @@ impl MatrixType {
 
 impl Numeric for MatrixType {
     // elementwise: valid iff the element type supports it
-    fn unary_result(&self, op: UrnaryOperator) -> Option<Type> {
+    fn unary_result(&self, op: UnaryOperator) -> Option<Type> {
         Some(self.with_dtype(self.dtype.unary_result(op)?))
     }
 

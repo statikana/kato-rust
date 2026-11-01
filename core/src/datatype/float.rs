@@ -1,16 +1,16 @@
 use std::cmp::max;
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UrnaryOperator };
+use crate::ast::{ BinaryOperator, UnaryOperator };
 use super::{ Type, Numeric, HasLayout, Layout, Target };
 
 #[derive(Clone, Debug)]
 pub struct FloatType { pub nbytes: usize }
 
 impl Numeric for FloatType {
-    fn unary_result(&self, op: UrnaryOperator) -> Option<Type> {
+    fn unary_result(&self, op: UnaryOperator) -> Option<Type> {
         match op {
-            UrnaryOperator::Negate => Some(Type::Float(self.clone())),
+            UnaryOperator::Negate => Some(Type::Float(self.clone())),
         }
     }
 

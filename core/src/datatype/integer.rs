@@ -1,7 +1,7 @@
 use std::cmp::max;
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UrnaryOperator };
+use crate::ast::{ BinaryOperator, UnaryOperator };
 use super::{ Type, Numeric, HasLayout, Layout, Target };
 
 #[derive(Clone, Debug)]
@@ -9,10 +9,10 @@ pub struct IntegerType { pub signed: bool, pub nbytes: usize }
 
 impl Numeric for IntegerType {
     // negation only makes sense for signed integers
-    fn unary_result(&self, op: UrnaryOperator) -> Option<Type> {
+    fn unary_result(&self, op: UnaryOperator) -> Option<Type> {
         match op {
-            UrnaryOperator::Negate if self.signed => Some(Type::Integer(self.clone())),
-            UrnaryOperator::Negate => None,
+            UnaryOperator::Negate if self.signed => Some(Type::Integer(self.clone())),
+            UnaryOperator::Negate => None,
         }
     }
 
