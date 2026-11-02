@@ -1,6 +1,6 @@
 use crate::ast::{ ASTNode, Span };
 use crate::operator::{ BinaryOperator, UnaryOperator };
-use crate::datatype::Type;
+use crate::types::Type;
 
 /// A typed view over a `Node` and its children, produced by `typecheck`
 pub struct TypedNode<'a> { pub node: &'a ASTNode, pub dtype: Type, pub children: Vec<TypedNode<'a>> }

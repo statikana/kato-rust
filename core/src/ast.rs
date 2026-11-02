@@ -1,7 +1,7 @@
 use std::fmt;
 
 use crate::typecheck::{ TypedNode, TypeError };
-use crate::datatype::Type;
+use crate::types::Type;
 
 mod scope;
 mod binary_operation;

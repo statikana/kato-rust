@@ -3,7 +3,8 @@
 
 # don't forget to chmod +x ./comp
 
-# VARS AND INFO
+
+### VARS AND INFO
 PROJECT_NAME='kato-rust' # whatever is in Cargo.toml
 
 GRAMMAR='Kato' # WITHOUT THE .g4 suffix
@@ -22,7 +23,7 @@ pub mod ${GRAMMAR_LOWER_CASE}listener;
 pub mod ${GRAMMAR_LOWER_CASE}visitor;"
 
 
-LIB_DIR='./generated' # root of package, not /src
+LIB_DIR='./generated' # root of package, not src/
 
 
 mkdir -p ${LIB_DIR}

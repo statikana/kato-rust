@@ -1,4 +1,4 @@
-use crate::datatype::Type;
+use crate::types::Type;
 use crate::typecheck::{ TypedNode, TypeError };
 use super::{ ASTNode, NodeBehavior, Span };
 

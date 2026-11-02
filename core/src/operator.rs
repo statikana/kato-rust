@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::datatype::Type;
+use crate::types::Type;
 
 mod add;
 mod sub;

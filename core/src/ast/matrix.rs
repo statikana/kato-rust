@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::datatype::{ FloatType, MatrixType, Type };
+use crate::types::{ MatrixType, Type };
 use crate::typecheck::{ TypedNode, TypeError };
 use super::{ ASTNode, NodeBehavior, Span };
 

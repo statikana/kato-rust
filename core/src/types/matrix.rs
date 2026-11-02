@@ -1,7 +1,5 @@
-use std::cmp::max;
 use std::fmt;
 
-use crate::operator::*;
 
 
 use super::{ Type, TypeAlgebra, HasLayout, Layout, Target };

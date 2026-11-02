@@ -1,4 +1,4 @@
-use crate::datatype::{ Type, TypeAlgebra };
+use crate::types::{ Type, TypeAlgebra };
 use super::BinaryOperator;
 
 pub struct Mul;

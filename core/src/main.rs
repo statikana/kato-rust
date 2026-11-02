@@ -11,7 +11,7 @@ mod ast;
 mod operator;
 mod ast_visitor;
 mod typecheck;
-mod datatype;
+mod types;
 mod ast_debug;
 
 fn read(path: &str) -> Vec<u8> {
@@ -51,7 +51,7 @@ fn main() {
     println!("Starting typing...");
 
     let t_typed_start = time::SystemTime::now();
-    let typed = typecheck::typecheck(&result).unwrap();
+    let _typed = typecheck::typecheck(&result).unwrap();
     let t_typed_end = time::SystemTime::now();
 
     println!("Finished typing");
