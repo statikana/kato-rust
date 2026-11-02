@@ -1,0 +1,13 @@
+[package]
+name = "ast"
+version = "0.1.0"
+
+edition = "2024"
+
+[dependencies]
+parse={ path="../parse" }
+antlr-rust="0.3.0-beta"
+
+# [[bin]]
+# name="kato-rust"
+# path="src/main.rs"

@@ -1,0 +1,12 @@
+[package]
+name="compiler"
+version="0.1.0"
+edition="2024"
+
+[lib]
+path="src/lib.rs"
+
+[dependencies]
+cranelift-frontend = "0.137.1"
+cranelift-codegen = "0.137.1"
+target-lexicon = "0.13.5"

@@ -9,10 +9,10 @@ expr
 
 term
     : literal                 # term_literal
+    | '-' term  # term_neg
     | lhs=term (MUL | DIV) rhs=term # term_mul_div
     | lhs=term (ADD | SUB) rhs=term # term_add_sub
     | PAREN_L term PAREN_R  # term_paren
-    | '-' term  # term_neg
     ;
 
 literal
