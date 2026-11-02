@@ -25,7 +25,7 @@ impl NodeBehavior for ASTBinaryOperation {
         f: &mut fmt::Formatter<'_>,
     ) -> fmt::Result {
         f.debug_struct(label)
-            .field("op", &self.op)
+            .field("op", &&self.op)
             .field("lhs", children[0])
             .field("rhs", children[1])
             .finish()

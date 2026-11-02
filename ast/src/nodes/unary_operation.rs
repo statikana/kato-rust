@@ -24,7 +24,7 @@ impl NodeBehavior for ASTUnaryOperation {
         f: &mut fmt::Formatter<'_>,
     ) -> fmt::Result {
         f.debug_struct(label)
-            .field("op", &self.op)
+            .field("op", &&self.op)
             .field("subject", children[0])
             .finish()
     }
