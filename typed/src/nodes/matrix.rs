@@ -12,21 +12,28 @@ impl Typecheck for ASTMatrix {
         if !children.iter().all(|elem| &elem.dtype == dtype) {
             return Err(TypeError::NonuniformMatrixType { span });
         }
-
-        // we need to now collapse the matrix as best we can
-        // e.g. a matrix[I] of dtype matrix[J] should be represented as matrix[I, J]
-        // since the elements should be already well-typed, we dont need
-        // recursion here.
+        
         let mut shape = vec![self.elements.len()];
-
-        // we may ignore the dtype of the elements?
+        
+        /*
+            we need to now collapse the matrix as best we can
+            because `typecheck` is reverse recursive (the children are already typechecked),
+            we may assume any further inner matrices have already been collapsed into this child.
+    
+            eg:
+            [
+                [ 1, 2, 3],
+                [ 40, 50, 60],
+            ]
+            is interpreted as a matrix of shape=[2,], with dtype=(matrix of shape=[3,] and dtype=i64)
+            after collapse: matrix of shape=[2,3] and dtype=i64
+        */
         if let Type::Matrix(MatrixType {
             shape: elem_shape,
             dtype: inner_dtype,
-        }) = dtype
-        {
+        }) = dtype {
             shape.extend(elem_shape);
-            dtype = inner_dtype; // if we collapse, adopt the inner matrix's type
+            dtype = inner_dtype;
 
         }
         Ok(Type::Matrix(MatrixType {
