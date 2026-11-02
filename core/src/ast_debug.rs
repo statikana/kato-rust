@@ -1,12 +1,12 @@
 use std::fmt;
 
-use crate::ast::Node;
+use crate::ast::ASTNode;
 use crate::typecheck::TypedNode;
 
 // Debug impls for the AST, kept out of ast.rs so the type definitions stay readable.
 // each node kind formats itself through `NodeData::fmt_labeled`; these just build the label.
 
-impl fmt::Debug for Node {
+impl fmt::Debug for ASTNode {
     // the span is folded into the node's label, e.g. `Integer@3..4(5)`
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let label = format!("{}@{}..{}", self.data.name(), self.span.start, self.span.end);

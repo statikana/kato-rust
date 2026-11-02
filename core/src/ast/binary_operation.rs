@@ -1,23 +1,24 @@
 use std::fmt;
 
-use crate::datatype::{ Type, Numeric };
+use crate::datatype::Type;
+use crate::operator::BinaryOperator;
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ Node, NodeData, Span, BinaryOperator };
+use super::{ ASTNode, NodeBehavior, Span };
 
-pub struct BinaryOperation { pub op: BinaryOperator, pub lhs: Box<Node>, pub rhs: Box<Node> }
+pub struct ASTBinaryOperation { pub op: &'static dyn BinaryOperator, pub lhs: Box<ASTNode>, pub rhs: Box<ASTNode> }
 
-impl NodeData for BinaryOperation {
+impl NodeBehavior for ASTBinaryOperation {
     fn name(&self) -> &'static str { "BinaryOperation" }
 
-    fn children(&self) -> Vec<&Node> {
+    fn children(&self) -> Vec<&ASTNode> {
         vec![&self.lhs, &self.rhs]
     }
 
-    // the operand types decide the result
+    // the operator decides the result from the operand types
     fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError> {
         let (lhs, rhs) = (&children[0].dtype, &children[1].dtype);
         // TODO: implementation of reverse operations is possible here
-        lhs.binary_result(self.op, rhs)
+        self.op.result_type(lhs, rhs)
             .ok_or(TypeError::UnsupportedBinaryOperation { op: self.op, lhs: lhs.clone(), rhs: rhs.clone(), span })
     }
 

@@ -2,11 +2,11 @@ use std::fmt;
 
 use crate::datatype::{ Type, IntegerType };
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ NodeData, Span };
+use super::{ NodeBehavior, Span };
 
-pub struct Integer(pub i128);
+pub struct ASTInteger(pub i128);
 
-impl NodeData for Integer {
+impl NodeBehavior for ASTInteger {
     fn name(&self) -> &'static str { "Integer" }
 
     fn typecheck(&self, _children: &[TypedNode], _span: Span) -> Result<Type, TypeError> {

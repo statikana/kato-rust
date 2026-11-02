@@ -1,13 +1,13 @@
 use crate::datatype::Type;
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ Node, NodeData, Span };
+use super::{ ASTNode, NodeBehavior, Span };
 
-pub struct Out { pub value: Box<Node> }
+pub struct ASTOut { pub value: Box<ASTNode> }
 
-impl NodeData for Out {
+impl NodeBehavior for ASTOut {
     fn name(&self) -> &'static str { "Out" }
 
-    fn children(&self) -> Vec<&Node> {
+    fn children(&self) -> Vec<&ASTNode> {
         vec![&self.value]
     }
 

@@ -1,26 +1,28 @@
 use std::cmp::max;
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UnaryOperator };
-use super::{ Type, Numeric, HasLayout, Layout, Target };
+use super::{ Type, TypeAlgebra, HasLayout, Layout, Target };
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct FloatType { pub nbytes: usize }
 
-impl Numeric for FloatType {
-    fn unary_result(&self, op: UnaryOperator) -> Option<Type> {
-        match op {
-            UnaryOperator::Negate => Some(Type::Float(self.clone())),
-        }
-    }
-
+impl FloatType {
     // float with float: widened to the larger side
-    fn binary_result(&self, _op: BinaryOperator, rhs: &Type) -> Option<Type> {
+    fn arithmetic(&self, rhs: &Type) -> Option<Type> {
         match rhs {
             Type::Float(rhs) => Some(Type::Float(FloatType { nbytes: max(self.nbytes, rhs.nbytes) })),
             _ => None,
         }
     }
+}
+
+impl TypeAlgebra for FloatType {
+    fn negate(&self) -> Option<Type> { Some(Type::Float(self.clone())) }
+
+    fn add(&self, rhs: &Type) -> Option<Type> { self.arithmetic(rhs) }
+    fn sub(&self, rhs: &Type) -> Option<Type> { self.arithmetic(rhs) }
+    fn mul(&self, rhs: &Type) -> Option<Type> { self.arithmetic(rhs) }
+    fn div(&self, rhs: &Type) -> Option<Type> { self.arithmetic(rhs) }
 }
 
 impl HasLayout for FloatType {

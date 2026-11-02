@@ -1,6 +1,5 @@
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UnaryOperator };
 
 mod integer;
 mod float;
@@ -35,7 +34,7 @@ pub struct Target {
     pub ptr_size: usize
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Type {
     Unit,
     Boolean,
@@ -45,12 +44,18 @@ pub enum Type {
     Matrix(MatrixType),
 }
 
-/// arithmetic rules for a type. `None` means the operation isn't supported
-pub trait Numeric {
-    /// the type of `op self`
-    fn unary_result(&self, op: UnaryOperator) -> Option<Type>;
-    /// the type of `self op rhs`
-    fn binary_result(&self, op: BinaryOperator, rhs: &Type) -> Option<Type>;
+/// arithmetic rules for a type, one method per operator. `None` (the default) means the operation isn't supported
+pub trait TypeAlgebra {
+    /// the type of `-self`
+    fn negate(&self) -> Option<Type> { None }
+    /// the type of `self + rhs`
+    fn add(&self, _rhs: &Type) -> Option<Type> { None }
+    /// the type of `self - rhs`
+    fn sub(&self, _rhs: &Type) -> Option<Type> { None }
+    /// the type of `self * rhs`
+    fn mul(&self, _rhs: &Type) -> Option<Type> { None }
+    /// the type of `self / rhs`
+    fn div(&self, _rhs: &Type) -> Option<Type> { None }
 }
 
 /// memory rules for a type
@@ -59,29 +64,35 @@ pub trait HasLayout {
     fn layout(&self, target: &Target) -> Option<Layout>;
 }
 
-impl Numeric for Type {
-    fn unary_result(&self, op: UnaryOperator) -> Option<Type> {
+impl Type {
+    /// the `Numeric` impl of the type inside, if it has one
+    fn numeric(&self) -> Option<&dyn TypeAlgebra> {
         match self {
             Type::Unit | Type::Boolean => None,
-            Type::Integer(t) => t.unary_result(op),
-            Type::Float(t) => t.unary_result(op),
-            Type::Ptr(t) => t.unary_result(op),
-            Type::Matrix(t) => t.unary_result(op),
+            Type::Integer(t) => Some(t),
+            Type::Float(t) => Some(t),
+            Type::Ptr(t) => Some(t),
+            Type::Matrix(t) => Some(t),
         }
     }
 
-    fn binary_result(&self, op: BinaryOperator, rhs: &Type) -> Option<Type> {
+    /// applies the binary operation `op` to `self` and `rhs`
+    fn binary(&self, rhs: &Type, op: fn(&dyn TypeAlgebra, &Type) -> Option<Type>) -> Option<Type> {
         match (self, rhs) {
-            (Type::Matrix(t), _) => t.binary_result(op, rhs),
-            // scalar op matrix: broadcast the scalar over the matrix's elements
-            (_, Type::Matrix(m)) => Some(m.with_dtype(self.binary_result(op, &m.dtype)?)),
-
-            (Type::Unit | Type::Boolean, _) => None,
-            (Type::Integer(t), _) => t.binary_result(op, rhs),
-            (Type::Float(t), _) => t.binary_result(op, rhs),
-            (Type::Ptr(t), _) => t.binary_result(op, rhs),
+            // (Type::Matrix(_), _) => op(self.numeric()?, rhs),
+            // // scalar op matrix: broadcast the scalar over the matrix's elements
+            // (_, Type::Matrix(m)) => Some(m.with_dtype(self.binary(&m.dtype, op)?)),
+            _ => op(self.numeric()?, rhs),
         }
     }
+}
+
+impl TypeAlgebra for Type {
+    fn negate(&self) -> Option<Type> { self.numeric()?.negate() }
+    fn add(&self, rhs: &Type) -> Option<Type> { self.binary(rhs, |t, rhs| t.add(rhs)) }
+    fn sub(&self, rhs: &Type) -> Option<Type> { self.binary(rhs, |t, rhs| t.sub(rhs)) }
+    fn mul(&self, rhs: &Type) -> Option<Type> { self.binary(rhs, |t, rhs| t.mul(rhs)) }
+    fn div(&self, rhs: &Type) -> Option<Type> { self.binary(rhs, |t, rhs| t.div(rhs)) }
 }
 
 impl HasLayout for Type {
@@ -93,7 +104,7 @@ impl HasLayout for Type {
             Type::Integer(t) => t.layout(target),
             Type::Float(t) => t.layout(target),
             Type::Ptr(t) => t.layout(target),
-            Type::Matrix(t) => t.layout(target),
+            // Type::Matrix(t) => t.layout(target),
             _other => panic!("Unknown memory layout")
         }
     }

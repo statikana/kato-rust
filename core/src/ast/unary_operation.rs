@@ -1,22 +1,23 @@
 use std::fmt;
 
-use crate::datatype::{ Type, Numeric };
+use crate::datatype::Type;
+use crate::operator::UnaryOperator;
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ Node, NodeData, Span, UnaryOperator };
+use super::{ ASTNode, NodeBehavior, Span };
 
-pub struct UnaryOperation { pub op: UnaryOperator, pub subject: Box<Node> }
+pub struct ASTUnaryOperation { pub op: &'static dyn UnaryOperator, pub subject: Box<ASTNode> }
 
-impl NodeData for UnaryOperation {
+impl NodeBehavior for ASTUnaryOperation {
     fn name(&self) -> &'static str { "UnaryOperation" }
 
-    fn children(&self) -> Vec<&Node> {
+    fn children(&self) -> Vec<&ASTNode> {
         vec![&self.subject]
     }
 
-    // the subject's type decides the result
+    // the operator decides the result from the subject's type
     fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError> {
         let subject = &children[0].dtype;
-        subject.unary_result(self.op)
+        self.op.result_type(subject)
             .ok_or(TypeError::UnsupportedUnaryOperation { op: self.op, subject: subject.clone(), span })
     }
 

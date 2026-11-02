@@ -2,14 +2,14 @@ use std::fmt;
 
 use crate::datatype::Type;
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ Node, NodeData, Span };
+use super::{ ASTNode, NodeBehavior, Span };
 
-pub struct Scope { pub statements: Vec<Node> }
+pub struct ASTScope { pub statements: Vec<ASTNode> }
 
-impl NodeData for Scope {
+impl NodeBehavior for ASTScope {
     fn name(&self) -> &'static str { "Scope" }
 
-    fn children(&self) -> Vec<&Node> {
+    fn children(&self) -> Vec<&ASTNode> {
         self.statements.iter().collect()
     }
 

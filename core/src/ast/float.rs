@@ -2,11 +2,11 @@ use std::fmt;
 
 use crate::datatype::{ Type, FloatType };
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ NodeData, Span };
+use super::{ NodeBehavior, Span };
 
-pub struct Float(pub f64);
+pub struct ASTFloat(pub f64);
 
-impl NodeData for Float {
+impl NodeBehavior for ASTFloat {
     fn name(&self) -> &'static str { "Float" }
 
     fn typecheck(&self, _children: &[TypedNode], _span: Span) -> Result<Type, TypeError> {

@@ -2,11 +2,11 @@ use std::fmt;
 
 use crate::datatype::{ Type };
 use crate::typecheck::{ TypedNode, TypeError };
-use super::{ NodeData, Span };
+use super::{ NodeBehavior, Span };
 
-pub struct Boolean(pub bool);
+pub struct ASTBoolean(pub bool);
 
-impl NodeData for Boolean {
+impl NodeBehavior for ASTBoolean {
     fn name(&self) -> &'static str { "Boolean" }
 
     fn typecheck(&self, _children: &[TypedNode], _span: Span) -> Result<Type, TypeError> {

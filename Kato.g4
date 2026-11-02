@@ -18,6 +18,7 @@ term
 literal
     : boolean       # value_boolean
     | numeric       # value_numeric
+    | matrix        # value_matrix
     ;
 
 boolean
@@ -30,6 +31,7 @@ numeric
     | REAL          # numeric_real
     ;
 
+matrix: '[' (term ',')* (term)? ']';
 // END RULES
 
 // START LEXER TOKENS

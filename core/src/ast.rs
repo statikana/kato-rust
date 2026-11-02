@@ -11,36 +11,38 @@ mod boolean;
 mod integer;
 mod float;
 mod unit;
+mod matrix;
 
-pub use scope::Scope;
-pub use binary_operation::BinaryOperation;
-pub use unary_operation::UnaryOperation;
-pub use out::Out;
-pub use boolean::Boolean;
-pub use integer::Integer;
-pub use float::Float;
-pub use unit::Unit;
+pub use scope::ASTScope;
+pub use binary_operation::ASTBinaryOperation;
+pub use unary_operation::ASTUnaryOperation;
+pub use boolean::ASTBoolean;
+pub use integer::ASTInteger;
+pub use float::ASTFloat;
+pub use unit::ASTUnit;
+pub use matrix::ASTMatrix;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Span { pub start: u32, pub end: u32 }
 
 
-// untyped (before-typechecker) node
-pub struct Node { pub data: Box<dyn NodeData>, pub span: Span }
+// ASTNode = Untyped node
+// as opposed to a TypedNode, which is made by the typechecker
+pub struct ASTNode { pub data: Box<dyn NodeBehavior>, pub span: Span }
 
-impl Node {
-    pub fn new(data: impl NodeData + 'static, span: Span) -> Node {
-        Node{ data: Box::new(data), span }
+impl ASTNode {
+    pub fn new(data: impl NodeBehavior + 'static, span: Span) -> ASTNode {
+        ASTNode{ data: Box::new(data), span }
     }
 }
 
 /// behaviour of a single kind of node
-pub trait NodeData {
+pub trait NodeBehavior {
     /// used as the node's label when printing
     fn name(&self) -> &'static str;
 
     /// child nodes, in evaluation order
-    fn children(&self) -> Vec<&Node> { Vec::new() }
+    fn children(&self) -> Vec<&ASTNode> { Vec::new() }
 
     /// the type this node evaluates to. `children` are the typed `children()`, in the same order
     fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError>;
@@ -58,9 +60,3 @@ pub trait NodeData {
         self.children().len() == 0
     }
 }
-
-#[derive(Clone, Copy, Debug)]
-pub enum BinaryOperator { Add, Sub, Mul, Div }
-
-#[derive(Clone, Copy, Debug)]
-pub enum UnaryOperator { Negate }

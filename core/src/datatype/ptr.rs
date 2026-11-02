@@ -1,15 +1,12 @@
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UnaryOperator };
-use super::{ Type, Numeric, HasLayout, Layout, Target };
+use super::{ Type, TypeAlgebra, HasLayout, Layout, Target };
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PtrType { pub pointee: Box<Type> }
 
-impl Numeric for PtrType {
-    fn unary_result(&self, _op: UnaryOperator) -> Option<Type> { None }
-    fn binary_result(&self, _op: BinaryOperator, _rhs: &Type) -> Option<Type> { None }
-}
+// no arithmetic on pointers
+impl TypeAlgebra for PtrType {}
 
 impl HasLayout for PtrType {
     fn layout(&self, target: &Target) -> Option<Layout> {

@@ -1,44 +1,56 @@
+use std::cmp::max;
 use std::fmt;
 
-use crate::ast::{ BinaryOperator, UnaryOperator };
-use super::{ Type, Numeric, HasLayout, Layout, Target };
+use crate::operator::*;
 
-#[derive(Clone, Debug)]
+
+use super::{ Type, TypeAlgebra, HasLayout, Layout, Target };
+
+// type algebra
+// layout
+// display
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MatrixType { pub shape: Vec<usize>, pub dtype: Box<Type> }
 
 impl MatrixType {
-    pub(super) fn with_dtype(&self, dtype: Type) -> Type {
-        Type::Matrix(MatrixType { shape: self.shape.clone(), dtype: Box::new(dtype) })
+    /// element-wise operations are performed on every element
+    /// so the dtype of this array is the result of `self.dtype` and `rhs`
+    /// under `op`
+    fn elementwise(&self, op: fn(&Type, &Type) -> Option<Type>, rhs: &Type) -> Option<Type> {
+        Some(Type::Matrix(MatrixType{
+            shape: self.shape.clone(),
+            dtype: Box::new(op(&*self.dtype, rhs).unwrap())
+        }))
     }
 }
 
-impl Numeric for MatrixType {
-    // elementwise: valid iff the element type supports it
-    fn unary_result(&self, op: UnaryOperator) -> Option<Type> {
-        Some(self.with_dtype(self.dtype.unary_result(op)?))
-    }
 
-    // elementwise with a matrix of the same shape, or broadcast against a scalar
-    fn binary_result(&self, op: BinaryOperator, rhs: &Type) -> Option<Type> {
-        match rhs {
-            Type::Matrix(rhs) if rhs.shape == self.shape => Some(self.with_dtype(self.dtype.binary_result(op, &rhs.dtype)?)),
-            Type::Matrix(_) => None,
-            scalar => Some(self.with_dtype(self.dtype.binary_result(op, scalar)?)),
-        }
-    }
+impl TypeAlgebra for MatrixType {
+    // element-wise ops
+    fn add(&self, rhs: &Type) -> Option<Type> { self.elementwise(TypeAlgebra::add, rhs)}
+    fn sub(&self, rhs: &Type) -> Option<Type> { self.elementwise(TypeAlgebra::sub, rhs)}
+    fn mul(&self, rhs: &Type) -> Option<Type> { self.elementwise(TypeAlgebra::mul, rhs)}
+    fn div(&self, rhs: &Type) -> Option<Type> { self.elementwise(TypeAlgebra::div, rhs)}
 }
 
 impl HasLayout for MatrixType {
-    // packed elements, aligned like a single element
     fn layout(&self, target: &Target) -> Option<Layout> {
-        let dtype_layout = self.dtype.layout(target)?;
-        let n_elem = self.shape.iter().try_fold(1 as usize, |item, &current| current.checked_mul(item))?;
-        let size = n_elem.checked_mul(dtype_layout.bytes)?;
-        Some(Layout{ bytes: size, align: dtype_layout.align })
+        // the bytes of the matrix is just the total size of its elements (n_elements * element_size)
+        // the align is the align if its elements
+        let element_layout = self.dtype.layout(target)?;
+
+        let n_elements = self.shape.iter().fold(1, |cur, dim_size| cur * dim_size);
+        let element_size = element_layout.bytes;
+        let bytes = n_elements * element_size;
+
+        let align = element_layout.align;
+        Some(Layout{ bytes, align})
     }
 }
 
 impl fmt::Display for MatrixType {
+    // shape, then element type, e.g. `[2, 3]f64`
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}{}", self.shape, self.dtype)
     }

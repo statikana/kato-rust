@@ -6,12 +6,11 @@ use antlr_rust::tree::ParseTreeVisitorCompat;
 use generated::katovisitor::*;
 use generated::katoparser::*;
 
-use crate::ast::BinaryOperator::*;
-use crate::ast::UnaryOperator::*;
-use crate::ast::{ Node, Span, Scope, BinaryOperation, UnaryOperation, Boolean, Integer, Float, Unit };
+use crate::operator::{ BinaryOperator, Add, Sub, Mul, Div, Negate };
+use crate::ast::{ ASTBinaryOperation, ASTBoolean, ASTFloat, ASTInteger, ASTMatrix, ASTNode, ASTScope, ASTUnaryOperation, ASTUnit, Span };
 
 
-type R = Box<Node>;
+type R = Box<ASTNode>;
 
 
 fn get_span<'input>(ctx: &impl KatoParserContext<'input>) -> Span {
@@ -29,7 +28,7 @@ macro_rules! debug_visit {
 
 impl Default for R {
     fn default() -> Self {
-        Box::new(Node::new(Integer(69), Span{ start: 0, end: 1 }))
+        Box::new(ASTNode::new(ASTInteger(69), Span{ start: 0, end: 1 }))
     }
 }
 
@@ -59,13 +58,13 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
             let result = *self.visit(expr.as_ref());
             results.push(result);
         }
-        R::new(Node::new(Scope{ statements: results }, get_span(ctx)))
+        R::new(ASTNode::new(ASTScope{ statements: results }, get_span(ctx)))
     }
 
     fn visit_expr_out(&mut self, ctx: &Expr_outContext<'input>) -> Self::Return {
         debug_visit!("visit_expr_out", ctx);
         println!("OUT: '{:?}'", *self.get(&ctx.term()));
-        R::new(Node::new(Unit, get_span(ctx)))
+        R::new(ASTNode::new(ASTUnit, get_span(ctx)))
     }
 
     fn visit_expr_term(&mut self, ctx: &Expr_termContext<'input>) -> Self::Return {
@@ -87,12 +86,12 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
         // try to get child at index 1 (should be the operator)
         // if it succeeds, return the resulting bin operation
         if let Some(op_child) = ctx.get_child(1) {
-            let op = match op_child.get_text().as_str() {
-                "*" => Mul,
-                "/" => Div,
+            let op: &'static dyn BinaryOperator = match op_child.get_text().as_str() {
+                "*" => &Mul,
+                "/" => &Div,
                 _ => panic!("Unexpected operator for MUL/DIV")
             };
-            R::new(Node::new(BinaryOperation { op, lhs, rhs }, get_span(ctx)))
+            R::new(ASTNode::new(ASTBinaryOperation { op, lhs, rhs }, get_span(ctx)))
         } else {
             panic!("Bigggg error")
         }
@@ -104,12 +103,12 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
         let rhs = self.get(&ctx.rhs);
 
         if let Some(op_child) = ctx.get_child(1) {
-            let op = match op_child.get_text().as_str() {
-                "+" => Add,
-                "-" => Sub,
+            let op: &'static dyn BinaryOperator = match op_child.get_text().as_str() {
+                "+" => &Add,
+                "-" => &Sub,
                 _ => panic!("Unexpected operator for ADD/SUB")
             };
-            R::new(Node::new(BinaryOperation { op, lhs, rhs }, get_span(ctx)))
+            R::new(ASTNode::new(ASTBinaryOperation { op, lhs, rhs }, get_span(ctx)))
         } else {
             panic!("Bigggg error")
         }
@@ -123,7 +122,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
     fn visit_term_neg(&mut self, ctx: &Term_negContext<'input>) -> Self::Return {
         debug_visit!("visit_term_neg", ctx);
         let subject = self.get(&ctx.term());
-        R::new(Node::new(UnaryOperation { op: Negate, subject: subject }, get_span(ctx)))
+        R::new(ASTNode::new(ASTUnaryOperation { op: &Negate, subject: subject }, get_span(ctx)))
     }
 
     fn visit_value_boolean(&mut self, ctx: &Value_booleanContext<'input>) -> Self::Return {
@@ -138,23 +137,35 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
 
     fn visit_boolean_true(&mut self, ctx: &Boolean_trueContext<'input>) -> Self::Return {
         debug_visit!("visit_boolean_true", ctx);
-        R::new(Node::new(Boolean(true), get_span(ctx)))
+        R::new(ASTNode::new(ASTBoolean(true), get_span(ctx)))
     }
 
     fn visit_boolean_false(&mut self, ctx: &Boolean_falseContext<'input>) -> Self::Return {
         debug_visit!("visit_boolean_false", ctx);
-        R::new(Node::new(Boolean(false), get_span(ctx)))
+        R::new(ASTNode::new(ASTBoolean(false), get_span(ctx)))
     }
 
     fn visit_numeric_integer(&mut self, ctx: &Numeric_integerContext<'input>) -> Self::Return {
         debug_visit!("visit_numeric_integer", ctx);
         type IntT = i128; // uhh seems odd
-        R::new(Node::new(Integer(ctx.get_text().parse::<IntT>().unwrap()), get_span(ctx)))
+        R::new(ASTNode::new(ASTInteger(ctx.get_text().parse::<IntT>().unwrap()), get_span(ctx)))
     }
 
     fn visit_numeric_real(&mut self, ctx: &Numeric_realContext<'input>) -> Self::Return {  
         debug_visit!("visit_numeric_real", ctx);
         type FloatT = f64; // ...
-        R::new(Node::new(Float(ctx.get_text().parse::<FloatT>().unwrap()), get_span(ctx)))
+        R::new(ASTNode::new(ASTFloat(ctx.get_text().parse::<FloatT>().unwrap()), get_span(ctx)))
+    }
+
+    fn visit_value_matrix(&mut self, ctx: &Value_matrixContext<'input>) -> Self::Return {
+        self.get(&ctx.matrix())
+    }
+
+    fn visit_matrix(&mut self, ctx: &MatrixContext<'input>) -> Self::Return {
+        // the typechecker for matrix handles collapsing matrices
+        // R::new
+        //
+        let elements: Vec<ASTNode> = ctx.term_all().iter().map(|elem| *self.visit(elem.as_ref())).collect();
+        R::new(ASTNode { data: Box::new(ASTMatrix{ elements }), span: get_span(ctx) })
     }
 }

@@ -7,6 +7,7 @@ use generated::katovisitor::KatoVisitorCompat;
 
 
 mod ast;
+mod operator;
 mod ast_visitor;
 
 mod typecheck;
@@ -31,7 +32,7 @@ fn main() {
     let token_stream = CommonTokenStream::new(lexer);
     let mut parser = generated::katoparser::KatoParser::new(token_stream);
 
-    let mut astv = ast_visitor::ASTVisitor {temp_result: Box::new(ast::Node::new(ast::Unit, ast::Span{ start: 0, end: 1 }))};
+    let mut astv = ast_visitor::ASTVisitor {temp_result: Box::new(ast::ASTNode::new(ast::ASTUnit, ast::Span{ start: 0, end: 1 }))};
     let start = parser.scope().unwrap();
     let result = astv.visit_scope(&start);
     let typed = typecheck::typecheck(&result).unwrap();
