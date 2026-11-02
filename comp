@@ -33,7 +33,7 @@ java -jar ${ANTLR4_JAR} -o ${LIB_DIR}/src -Dlanguage=Rust -visitor ${GRAMMAR}.${
 echo ${LIBRS_TEXT} > ${LIB_DIR}/src/lib.rs;
 
 # fix any errors
-# cargo fix --lib --allow-dirty  # in cargo we trust
-# cargo build
+cargo fix --lib --allow-dirty  # in cargo we trust
+cargo build
 
 # cargo run

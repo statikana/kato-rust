@@ -19,10 +19,10 @@ fn get_span<'input>(ctx: &impl KatoParserContext<'input>) -> Span {
 // prints the rule being visited, its span, and its source text (debug builds only)
 macro_rules! debug_visit {
     ($name:expr, $ctx:expr) => {
-        if cfg!(debug_assertions) {
-            let span = get_span($ctx);
-            eprintln!("[visit] {:<20} span={}..{} text={:?}", $name, span.start, span.end, $ctx.get_text());
-        }
+        // if cfg!(debug_assertions) {
+        //     let span = get_span($ctx);
+        //     eprintln!("[visit] {:<20} span={}..{} text={:?}", $name, span.start, span.end, $ctx.get_text());
+        // }
     };
 }
 

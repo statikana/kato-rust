@@ -35,4 +35,8 @@ impl NodeBehavior for ASTMatrix {
         }
         Ok(Type::Matrix(MatrixType { shape, dtype: Box::new(elem_dtype.clone()) }))
     }
+
+    fn fmt_labeled(&self, label: &str, children: &[&dyn fmt::Debug], f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct(label).field("elements", &children).finish()
+    }
 }
