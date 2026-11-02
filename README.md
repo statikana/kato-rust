@@ -15,3 +15,5 @@ Current progress:
 - [X] `typed`
 - [ ] `clif`
 - [ ] `compile`
+
+Next step: Begin transcribing operators and functions from the language into functions which return instructions. Then, make a Typed AST walker which reads the tree and uses the functions to create a .clif
