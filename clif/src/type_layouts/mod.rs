@@ -1,9 +1,9 @@
+pub mod boolean;
 pub mod float;
 pub mod integer;
 pub mod matrix;
 pub mod ptr;
 pub mod unit;
-pub mod boolean;
 
 use cranelift_codegen::ir;
 use typed::types::Type;
@@ -15,13 +15,13 @@ pub struct Layout {
 
     /// align of memory addr in bits
     align: usize,
-    pub clif_type: ir::Type
+    pub clif_type: ir::Type,
 }
 
 /// info about target system
 pub struct Target {
     pub pointer_size: usize,
-    pub register_width: usize
+    pub register_width: usize,
 }
 
 /// memory rules for a type

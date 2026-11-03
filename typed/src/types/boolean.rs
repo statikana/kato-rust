@@ -1,2 +1,2 @@
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct BooleanType{}
+pub struct BooleanType {}

@@ -1,17 +1,17 @@
 use std::fmt;
 
+pub mod boolean;
 pub mod float;
 pub mod integer;
 pub mod matrix;
 pub mod ptr;
 pub mod unit;
-pub mod boolean;
 
+pub use boolean::BooleanType;
 pub use float::FloatType;
 pub use integer::IntegerType;
 pub use matrix::MatrixType;
 pub use ptr::PtrType;
-pub use boolean::BooleanType;
 pub use unit::UnitType;
 
 #[derive(Clone, Debug, PartialEq, Eq)]

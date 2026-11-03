@@ -18,9 +18,14 @@ use crate::type_layouts::Target;
 // https://docs.rs/cranelift-frontend/latest/cranelift_frontend/index.html
 trait Instuctions {
     /// Adds instructions to the bulder to execute this node
-    fn build(&self, typed: &TypedNode, target: &Target, builder: &mut FunctionBuilder) -> Option<ir::Value>;
+    fn build(
+        &self,
+        typed: &TypedNode,
+        target: &Target,
+        builder: &mut FunctionBuilder,
+    ) -> Option<ir::Value>;
 
-    /// What clif type this node will result in needing, used to predict 
+    /// What clif type this node will result in needing, used to predict
     fn get_clif_type(&self, typed: &TypedNode, target: &Target) -> Option<ir::Type>;
 }
 
