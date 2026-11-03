@@ -6,11 +6,11 @@ use antlr_rust::tree::{ParseTree, Tree};
 use parse::katoparser::*;
 use parse::katovisitor::*;
 
-use crate::nodes::{ASTNode, Span};
 use crate::nodes::{
     ASTBinaryOperation, ASTBoolean, ASTFloat, ASTInteger, ASTMatrix, ASTScope, ASTUnaryOperation,
     ASTUnit,
 };
+use crate::nodes::{ASTNode, Span};
 use crate::operator::{BinaryOperator, UnaryOperator};
 
 type R = Box<ASTNode>;

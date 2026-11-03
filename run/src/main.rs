@@ -5,8 +5,8 @@ use std::time;
 use antlr_rust::InputStream;
 use antlr_rust::common_token_stream::CommonTokenStream;
 use ast::ast_visitor;
-use typed::typecheck;
 use parse::katovisitor::KatoVisitorCompat;
+use typed::typecheck;
 
 fn read(path: &str) -> Vec<u8> {
     let mut file = File::open(path).unwrap();
@@ -55,7 +55,6 @@ fn main() {
 
     // println!("Finished typing");
 
-
     println!(
         "AST Tree: {:>3}ms",
         t_ast_end.duration_since(t_ast_start).unwrap().as_millis()
@@ -73,7 +72,6 @@ fn main() {
             + t_ast_end.duration_since(t_ast_start).unwrap())
         .as_millis()
     );
-    
 
     for statement in typed_ast.children {
         println!("{:?}", statement);

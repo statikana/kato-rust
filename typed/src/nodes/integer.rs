@@ -1,6 +1,6 @@
 use ast::nodes::{ASTInteger, Span};
 
-use crate::typecheck::{Typecheck, TypeError, TypedNode};
+use crate::typecheck::{TypeError, Typecheck, TypedNode};
 use crate::types::{IntegerType, Type};
 
 impl Typecheck for ASTInteger {

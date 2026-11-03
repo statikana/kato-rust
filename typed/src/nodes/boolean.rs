@@ -1,6 +1,6 @@
 use ast::nodes::{ASTBoolean, Span};
 
-use crate::typecheck::{Typecheck, TypeError, TypedNode};
+use crate::typecheck::{TypeError, Typecheck, TypedNode};
 use crate::types::Type;
 
 impl Typecheck for ASTBoolean {

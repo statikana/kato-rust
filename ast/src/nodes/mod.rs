@@ -3,7 +3,6 @@ pub mod boolean;
 pub mod float;
 pub mod integer;
 pub mod matrix;
-pub mod out;
 pub mod scope;
 pub mod unary_operation;
 pub mod unit;
@@ -13,7 +12,6 @@ pub use boolean::ASTBoolean;
 pub use float::ASTFloat;
 pub use integer::ASTInteger;
 pub use matrix::ASTMatrix;
-pub use out::ASTOut;
 pub use scope::ASTScope;
 pub use unary_operation::ASTUnaryOperation;
 pub use unit::ASTUnit;
@@ -44,7 +42,7 @@ impl ASTNode {
 
 // declares `NodeKind` with one variant per node type, plus a `From` impl for each
 // so that `ASTNode::new(ASTInteger(5), span)` works
-macro_rules! node_kinds {
+macro_rules! define_node_kinds {
     ($($variant:ident($node:ty)),* $(,)?) => {
         /// every kind of node. a closed set, so later passes (e.g. the typechecker) can `match` on it exhaustively
         pub enum NodeKind {
@@ -70,17 +68,25 @@ macro_rules! node_kinds {
     };
 }
 
-node_kinds! {
-    Scope(ASTScope),
-    Out(ASTOut),
-    BinaryOperation(ASTBinaryOperation),
-    UnaryOperation(ASTUnaryOperation),
-    Boolean(ASTBoolean),
-    Integer(ASTInteger),
-    Float(ASTFloat),
-    Unit(ASTUnit),
-    Matrix(ASTMatrix),
+// this is where every AST Node is defined so it can get sent -> typing -> clif
+//
+#[macro_export]
+macro_rules! for_each_node_kind {
+    ($callback:ident) => {
+        $callback! {
+            Scope($crate::nodes::ASTScope),
+            BinaryOperation($crate::nodes::ASTBinaryOperation),
+            UnaryOperation($crate::nodes::ASTUnaryOperation),
+            Boolean($crate::nodes::ASTBoolean),
+            Integer($crate::nodes::ASTInteger),
+            Float($crate::nodes::ASTFloat),
+            Unit($crate::nodes::ASTUnit),
+            Matrix($crate::nodes::ASTMatrix),
+        }
+    };
 }
+
+for_each_node_kind!(define_node_kinds);
 
 /// behaviour of a single kind of node
 pub trait NodeBehavior {

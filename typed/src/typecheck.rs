@@ -4,7 +4,7 @@ use ast::operator::{BinaryOperator, UnaryOperator};
 use crate::types::Type;
 
 /// A typed view over a `Node` and its children, produced by `typecheck`
-/// 
+///
 pub struct TypedNode<'a> {
     pub node: &'a ASTNode,
     pub dtype: Type,
@@ -39,7 +39,6 @@ impl Typecheck for NodeKind {
     fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError> {
         match self {
             NodeKind::Scope(n) => n.typecheck(children, span),
-            NodeKind::Out(n) => n.typecheck(children, span),
             NodeKind::BinaryOperation(n) => n.typecheck(children, span),
             NodeKind::UnaryOperation(n) => n.typecheck(children, span),
             NodeKind::Boolean(n) => n.typecheck(children, span),

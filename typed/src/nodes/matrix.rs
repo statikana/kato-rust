@@ -1,6 +1,6 @@
 use ast::nodes::{ASTMatrix, Span};
 
-use crate::typecheck::{Typecheck, TypeError, TypedNode};
+use crate::typecheck::{TypeError, Typecheck, TypedNode};
 use crate::types::{MatrixType, Type};
 
 impl Typecheck for ASTMatrix {
@@ -12,14 +12,14 @@ impl Typecheck for ASTMatrix {
         if !children.iter().all(|elem| &elem.dtype == dtype) {
             return Err(TypeError::NonuniformMatrixType { span });
         }
-        
+
         let mut shape = vec![self.elements.len()];
-        
+
         /*
             we need to now collapse the matrix as best we can
             because `typecheck` is reverse recursive (the children are already typechecked),
             we may assume any further inner matrices have already been collapsed into this child.
-    
+
             eg:
             [
                 [ 1, 2, 3],
@@ -31,10 +31,10 @@ impl Typecheck for ASTMatrix {
         if let Type::Matrix(MatrixType {
             shape: elem_shape,
             dtype: inner_dtype,
-        }) = dtype {
+        }) = dtype
+        {
             shape.extend(elem_shape);
             dtype = inner_dtype;
-
         }
         Ok(Type::Matrix(MatrixType {
             shape,

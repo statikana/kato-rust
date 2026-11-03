@@ -1,5 +1,5 @@
 [package]
-name="compiler"
+name="clif"
 version="0.1.0"
 edition="2024"
 
@@ -10,3 +10,6 @@ path="src/lib.rs"
 cranelift-frontend = "0.137.1"
 cranelift-codegen = "0.137.1"
 target-lexicon = "0.13.5"
+
+ast = { path="../ast" }
+typed = { path="../typed" }

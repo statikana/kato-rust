@@ -2,15 +2,14 @@ use ast::operator::{BinaryOperator, UnaryOperator};
 
 use crate::types::{Type, TypeAlgebra};
 
-// these map the Operators in `ast` to the operand's respective type algebra function (`.add`, `.div`, etc.)
-
+/// these link the BinaryOperator enum in AST
+/// to the methods called by the type algebra helper
 pub trait BinaryTyping {
     /// the type of `lhs op rhs`. `None` means the operand types don't support it
     fn result_type(&self, lhs: &Type, rhs: &Type) -> Option<Type>;
 }
 
 pub trait UnaryTyping {
-    /// the type of `op subject`. `None` means the subject's type doesn't support it
     fn result_type(&self, subject: &Type) -> Option<Type>;
 }
 
