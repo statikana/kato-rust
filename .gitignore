@@ -2,3 +2,4 @@ Cargo.lock
 flake.lock
 
 .target/
+.antlr/
