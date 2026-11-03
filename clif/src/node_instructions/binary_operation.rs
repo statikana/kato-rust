@@ -1,4 +1,4 @@
-use crate::layout::{HasLayout, Target};
+use crate::type_layouts::{HasLayout, Target};
 
 use super::Clif;
 use ast::nodes::NodeBehavior;

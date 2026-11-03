@@ -1,6 +1,6 @@
 use typed::types::UnitType;
 
-use crate::layout::{Layout, HasLayout};
+use crate::type_layouts::{Layout, HasLayout};
 
 
 impl HasLayout for UnitType {

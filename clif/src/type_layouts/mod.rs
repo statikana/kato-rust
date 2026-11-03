@@ -5,7 +5,6 @@ pub mod ptr;
 pub mod unit;
 pub mod boolean;
 
-use ast::for_each_node_kind;
 use cranelift_codegen::ir;
 use typed::types::Type;
 

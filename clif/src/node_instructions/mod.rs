@@ -13,7 +13,7 @@ use cranelift_frontend::FunctionBuilder;
 use ast::nodes::NodeKind;
 use typed::typecheck::TypedNode;
 
-use crate::layout::Target;
+use crate::type_layouts::Target;
 
 // https://docs.rs/cranelift-frontend/latest/cranelift_frontend/index.html
 trait Clif {
