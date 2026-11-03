@@ -1,4 +1,5 @@
 mod instructions;
+pub mod layout;
 
 use typed::typecheck::TypedNode;
 

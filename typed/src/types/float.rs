@@ -1,7 +1,7 @@
 use std::cmp::max;
 use std::fmt;
 
-use super::{HasLayout, Layout, Target, Type, TypeAlgebra};
+use super::{Type, TypeAlgebra};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct FloatType {
@@ -36,12 +36,6 @@ impl TypeAlgebra for FloatType {
     }
     fn div(&self, rhs: &Type) -> Option<Type> {
         self.arithmetic(rhs)
-    }
-}
-
-impl HasLayout for FloatType {
-    fn layout(&self, _target: &Target) -> Option<Layout> {
-        Some(Layout::primitive(self.nbytes))
     }
 }
 

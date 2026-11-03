@@ -1,21 +1,23 @@
 use std::fmt;
 
-use crate::layout::{Layout, Target};
-
 pub mod float;
 pub mod integer;
 pub mod matrix;
 pub mod ptr;
+pub mod unit;
+pub mod boolean;
 
 pub use float::FloatType;
 pub use integer::IntegerType;
 pub use matrix::MatrixType;
 pub use ptr::PtrType;
+pub use boolean::BooleanType;
+pub use unit::UnitType;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Type {
-    Unit,
-    Boolean,
+    Unit(UnitType),
+    Boolean(BooleanType),
     Integer(IntegerType),
     Float(FloatType),
     Ptr(PtrType),
@@ -46,17 +48,12 @@ pub trait TypeAlgebra {
     }
 }
 
-/// memory rules for a type
-pub trait HasLayout {
-    /// the layout of the type on `target`. returns `None` if it has no layout or is too large for a stack (use dynamic)
-    fn layout(&self, target: &Target) -> Option<Layout>;
-}
-
 impl Type {
     /// the `Numeric` impl of the type inside, if it has one
     fn numeric(&self) -> Option<&dyn TypeAlgebra> {
         match self {
-            Type::Unit | Type::Boolean => None,
+            Type::Unit(_) => None,
+            Type::Boolean(_) => None,
             Type::Integer(t) => Some(t),
             Type::Float(t) => Some(t),
             Type::Ptr(t) => Some(t),
@@ -93,27 +90,12 @@ impl TypeAlgebra for Type {
     }
 }
 
-impl HasLayout for Type {
-    fn layout(&self, target: &Target) -> Option<Layout> {
-        #[allow(unreachable_patterns)]
-        match self {
-            Type::Unit => Some(Layout { bytes: 0, align: 1 }),
-            Type::Boolean => Some(Layout::primitive(1)),
-            Type::Integer(t) => t.layout(target),
-            Type::Float(t) => t.layout(target),
-            Type::Ptr(t) => t.layout(target),
-            // Type::Matrix(t) => t.layout(target),
-            _other => panic!("Unknown memory layout"),
-        }
-    }
-}
-
 // compact names, e.g. `i64`, `*f32`, `[2, 3]f64`
 impl fmt::Display for Type {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Type::Unit => f.write_str("unit"),
-            Type::Boolean => f.write_str("bool"),
+            Type::Unit(t) => f.write_str("unit"),
+            Type::Boolean(t) => f.write_str("bool"),
             Type::Integer(t) => t.fmt(f),
             Type::Float(t) => t.fmt(f),
             Type::Ptr(t) => t.fmt(f),

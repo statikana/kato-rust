@@ -42,7 +42,7 @@ impl ASTNode {
 
 // declares `NodeKind` with one variant per node type, plus a `From` impl for each
 // so that `ASTNode::new(ASTInteger(5), span)` works
-macro_rules! define_node_kinds {
+macro_rules! define_node_kind {
     ($($variant:ident($node:ty)),* $(,)?) => {
         /// every kind of node. a closed set, so later passes (e.g. the typechecker) can `match` on it exhaustively
         pub enum NodeKind {
@@ -86,7 +86,7 @@ macro_rules! for_each_node_kind {
     };
 }
 
-for_each_node_kind!(define_node_kinds);
+for_each_node_kind!(define_node_kind);
 
 /// behaviour of a single kind of node
 pub trait NodeBehavior {

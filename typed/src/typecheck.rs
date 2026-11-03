@@ -1,3 +1,4 @@
+use ast::for_each_node_kind;
 use ast::nodes::{ASTNode, NodeKind, Span};
 use ast::operator::{BinaryOperator, UnaryOperator};
 
@@ -35,20 +36,19 @@ pub trait Typecheck {
     fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError>;
 }
 
-impl Typecheck for NodeKind {
-    fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError> {
-        match self {
-            NodeKind::Scope(n) => n.typecheck(children, span),
-            NodeKind::BinaryOperation(n) => n.typecheck(children, span),
-            NodeKind::UnaryOperation(n) => n.typecheck(children, span),
-            NodeKind::Boolean(n) => n.typecheck(children, span),
-            NodeKind::Integer(n) => n.typecheck(children, span),
-            NodeKind::Float(n) => n.typecheck(children, span),
-            NodeKind::Unit(n) => n.typecheck(children, span),
-            NodeKind::Matrix(n) => n.typecheck(children, span),
+macro_rules! impl_typecheck_for_node_kind {
+    ($($variant:ident($node:ty)),* $(,)?) => {
+        impl Typecheck for NodeKind {
+            fn typecheck(&self, children: &[TypedNode], span: Span) -> Result<Type, TypeError> {
+                match self {
+                    $(NodeKind::$variant(n) => n.typecheck(children, span)),*
+                }
+            }
         }
-    }
+    };
 }
+
+for_each_node_kind!(impl_typecheck_for_node_kind);
 
 // types the children first, then lets the node decide its own type from theirs
 pub fn typecheck(node: &ASTNode) -> Result<TypedNode<'_>, TypeError> {

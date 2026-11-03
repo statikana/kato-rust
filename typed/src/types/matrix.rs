@@ -1,9 +1,8 @@
 use std::fmt;
 
-use super::{HasLayout, Layout, Target, Type, TypeAlgebra};
+use super::{Type, TypeAlgebra};
 
 // type algebra
-// layout
 // display
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -37,21 +36,6 @@ impl TypeAlgebra for MatrixType {
     }
     fn div(&self, rhs: &Type) -> Option<Type> {
         self.elementwise(TypeAlgebra::div, rhs)
-    }
-}
-
-impl HasLayout for MatrixType {
-    fn layout(&self, target: &Target) -> Option<Layout> {
-        // the bytes of the matrix is just the total size of its elements (n_elements * element_size)
-        // the align is the align if its elements
-        let element_layout = self.dtype.layout(target)?;
-
-        let n_elements = self.shape.iter().fold(1, |cur, dim_size| cur * dim_size);
-        let element_size = element_layout.bytes;
-        let bytes = n_elements * element_size;
-
-        let align = element_layout.align;
-        Some(Layout { bytes, align })
     }
 }
 

@@ -7,24 +7,34 @@ pub mod scope;
 pub mod unary_operation;
 pub mod unit;
 
-use cranelift_codegen::ir::Value;
+use cranelift_codegen::ir;
 use cranelift_frontend::FunctionBuilder;
 
 use ast::nodes::NodeKind;
 use typed::typecheck::TypedNode;
 
+use crate::layout::Target;
+
 // https://docs.rs/cranelift-frontend/latest/cranelift_frontend/index.html
 trait Clif {
-    /// Adds instructions to the bulder to execute this node.
-    fn build(&self, typed: &TypedNode, builder: &mut FunctionBuilder) -> Value;
+    /// Adds instructions to the bulder to execute this node
+    fn build(&self, typed: &TypedNode, target: &Target, builder: &mut FunctionBuilder) -> Option<ir::Value>;
+
+    /// What clif type this node will result in needing, used to predict 
+    fn get_clif_type(&self, typed: &TypedNode, target: &Target) -> Option<ir::Type>;
 }
 
 macro_rules! impl_clif_for_nodes {
     ($($variant:ident($node:ty)),* $(,)?) => {
         impl Clif for NodeKind {
-            fn build(&self, typed: &TypedNode, builder: &mut FunctionBuilder) -> Value {
+            fn build(&self, typed: &TypedNode, target: &Target, builder: &mut FunctionBuilder) -> Option<ir::Value> {
                 match self {
-                    $(NodeKind::$variant(n) => n.build(typed, builder)),*
+                    $(NodeKind::$variant(n) => n.build(typed, target, builder)),*
+                }
+            }
+            fn get_clif_type(&self, typed: &TypedNode, target: &Target) -> Option<ir::Type> {
+                match self {
+                    $(NodeKind::$variant(n) => n.get_clif_type(typed, target)),*
                 }
             }
         }

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use super::{HasLayout, Layout, Target, Type, TypeAlgebra};
+use super::{Type, TypeAlgebra};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PtrType {
@@ -9,12 +9,6 @@ pub struct PtrType {
 
 // no arithmetic on pointers
 impl TypeAlgebra for PtrType {}
-
-impl HasLayout for PtrType {
-    fn layout(&self, target: &Target) -> Option<Layout> {
-        Some(Layout::primitive(target.ptr_size))
-    }
-}
 
 impl fmt::Display for PtrType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
