@@ -16,4 +16,4 @@ Current progress:
 - [ ] `clif`
 - [ ] `compile`
 
-Next step: Begin transcribing operators and functions from the language into functions which return instructions. Then, make a Typed AST walker which reads the tree and uses the functions to create a .clif
+Next step: Finish implementing the `builder` calls for the basic AST Node types.
