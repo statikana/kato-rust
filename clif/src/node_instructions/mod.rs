@@ -16,7 +16,7 @@ use typed::typecheck::TypedNode;
 use crate::type_layouts::Target;
 
 // https://docs.rs/cranelift-frontend/latest/cranelift_frontend/index.html
-trait Clif {
+trait Instuctions {
     /// Adds instructions to the bulder to execute this node
     fn build(&self, typed: &TypedNode, target: &Target, builder: &mut FunctionBuilder) -> Option<ir::Value>;
 
@@ -26,7 +26,7 @@ trait Clif {
 
 macro_rules! impl_clif_for_nodes {
     ($($variant:ident($node:ty)),* $(,)?) => {
-        impl Clif for NodeKind {
+        impl Instuctions for NodeKind {
             fn build(&self, typed: &TypedNode, target: &Target, builder: &mut FunctionBuilder) -> Option<ir::Value> {
                 match self {
                     $(NodeKind::$variant(n) => n.build(typed, target, builder)),*

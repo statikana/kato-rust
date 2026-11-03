@@ -1,12 +1,12 @@
 use crate::type_layouts::Target;
 
-use super::Clif;
+use super::Instuctions;
 
 use cranelift_codegen::ir;
 use cranelift_frontend::FunctionBuilder;
 use typed::typecheck::TypedNode;
 
-impl Clif for ast::nodes::ASTScope {
+impl Instuctions for ast::nodes::ASTScope {
     fn build(&self, typed: &TypedNode, target: &Target, builder: &mut FunctionBuilder) -> Option<ir::Value> {
         panic!();
     }

@@ -11,5 +11,6 @@ cranelift-frontend = "0.137.1"
 cranelift-codegen = "0.137.1"
 target-lexicon = "0.13.5"
 
+# ast dependency is needed to implement instructions for each node type
 ast = { path="../ast" }
 typed = { path="../typed" }

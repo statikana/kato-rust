@@ -11,7 +11,7 @@ GRAMMAR='Kato' # WITHOUT THE .g4 suffix
 GRAMMAR_SUFFIX='g4'
 GRAMMAR_LOWER_CASE='kato' # for imports and stuff
 
-ANTLR4_JAR='./_antlr4/antlr4-4.8-2-SNAPSHOT-complete.jar'  # must be from rrevenantt/antlr4rust releases for -Dlanguage=Rust
+ANTLR4_JAR='./.antlrbin/antlr4-4.8-2-SNAPSHOT-complete.jar'  # must be from rrevenantt/antlr4rust releases for -Dlanguage=Rust
 
 LIBRS_TEXT="
 pub mod ${GRAMMAR_LOWER_CASE}parser;
@@ -34,7 +34,7 @@ java -jar ${ANTLR4_JAR} -o ${LIB_DIR}/src -Dlanguage=Rust -visitor ${GRAMMAR}.${
 echo ${LIBRS_TEXT} > ${LIB_DIR}/src/lib.rs;
 
 # fix any errors
-# cargo fix --lib --allow-dirty  # in cargo we trust
+cargo fix --lib --allow-dirty 
 # cargo build
 
 # cargo run

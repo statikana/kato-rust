@@ -1,6 +1,6 @@
 use crate::type_layouts::{HasLayout, Target};
 
-use super::Clif;
+use super::Instuctions;
 use ast::nodes::NodeBehavior;
 use cranelift_codegen::ir::AbiParam;
 use cranelift_codegen::{ ir, isa };
@@ -11,7 +11,7 @@ use typed::typecheck::{ TypedNode, Typecheck };
 use typed::types::Type;
 
 
-impl Clif for ast::nodes::ASTBinaryOperation {
+impl Instuctions for ast::nodes::ASTBinaryOperation {
     fn build(&self, typed: &TypedNode, target: &Target, builder: &mut FunctionBuilder) -> Option<ir::Value> {
         panic!()
     }

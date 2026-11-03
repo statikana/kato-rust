@@ -1,6 +1,4 @@
-/target
 Cargo.lock
-out.txt
-.antlr
-parse/src
-target/
+flake.lock
+
+.target/
