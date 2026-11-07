@@ -1,11 +1,10 @@
-pub mod boolean;
 pub mod float;
 pub mod integer;
 pub mod matrix;
 pub mod ptr;
-pub mod unit;
 
 use cranelift_codegen::ir;
+use cranelift_codegen::ir::types::I8;
 use typed::types::Type;
 
 /// represents rules for how an object must be treated in memory
@@ -30,30 +29,19 @@ pub trait HasLayout {
     fn layout(&self, target: &Target) -> Option<Layout>;
 }
 
-// similar to the for_each_node_kind but implements layout information for each type (not node)
-macro_rules! for_each_type_kind {
-    ($callback:ident) => {
-        $callback! {
-            Boolean(BooleanType),
-            Float(FloatType),
-            Integer(IntegerType),
-            Matrix(MatrixType),
-            Ptr(PtrType),
-            Unit(UnitType),
+impl HasLayout for Type {
+    fn layout(&self, target: &Target) -> Option<Layout> {
+        match self {
+            Type::Unit => None,
+            Type::Boolean => Some(Layout {
+                size: 1,
+                align: 1,
+                clif_type: I8,
+            }),
+            Type::Integer(t) => t.layout(target),
+            Type::Float(t) => t.layout(target),
+            Type::Ptr(t) => t.layout(target),
+            Type::Matrix(t) => t.layout(target),
         }
-    };
+    }
 }
-
-macro_rules! impl_layout_for_types {
-    ($($type_variant:ident($type_struct:ty)),* $(,)?) => {
-        impl HasLayout for Type {
-            fn layout(&self, target: &Target) -> Option<Layout> {
-                match self {
-                    $(Type::$type_variant(t) => t.layout(target)),*
-                }
-            }
-        }
-    };
-}
-
-for_each_type_kind!(impl_layout_for_types);

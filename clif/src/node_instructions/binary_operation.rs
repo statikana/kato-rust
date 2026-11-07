@@ -1,30 +1,36 @@
-use crate::type_layouts::{HasLayout, Target};
-
-use super::Instuctions;
-use ast::nodes::NodeBehavior;
-use cranelift_codegen::ir::AbiParam;
-use cranelift_codegen::{ir, isa};
+use ast::operator::BinaryOperator;
+use cranelift_codegen::ir;
 use cranelift_frontend::FunctionBuilder;
-use typed::operator::BinaryTyping;
-use typed::typecheck::{Typecheck, TypedNode};
-
+use typed::typecheck::TypedNode;
 use typed::types::Type;
 
-impl Instuctions for ast::nodes::ASTBinaryOperation {
-    fn build(
-        &self,
-        typed: &TypedNode,
-        target: &Target,
-        builder: &mut FunctionBuilder,
-    ) -> Option<ir::Value> {
-        panic!()
-    }
+use super::NodeInstuctions;
+use crate::operator_instructions::BinaryOperatorInstructions;
+use crate::type_layouts::Target;
 
-    fn get_clif_type(&self, typed: &TypedNode, target: &Target) -> Option<ir::Type> {
-        let lhs_type = &typed.children[0].dtype;
-        let rhs_type = &typed.children[1].dtype;
+pub fn build(
+    op: BinaryOperator,
+    lhs: &TypedNode,
+    rhs: &TypedNode,
+    result_type: &Type,
+    target: &Target,
+    builder: &mut FunctionBuilder,
+) -> Option<ir::Value> {
+    // this should return the type from get_clif_type
+    // TODO: actually enforce this? ^
 
-        let return_type = self.op.result_type(lhs_type, rhs_type).unwrap();
-        return Some(return_type.layout(target)?.clif_type);
-    }
+    // first need to build children
+    // TODO: error on child with no value? for now just propagate
+    let lhs_value = lhs.build(target, builder)?;
+    let rhs_value = rhs.build(target, builder)?;
+
+    op.build(
+        lhs_value,
+        &lhs.dtype,
+        rhs_value,
+        &rhs.dtype,
+        result_type,
+        target,
+        builder,
+    )
 }

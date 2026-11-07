@@ -3,19 +3,15 @@ use std::rc::Rc;
 use antlr_rust::token::Token;
 use antlr_rust::tree::ParseTreeVisitorCompat;
 use antlr_rust::tree::{ParseTree, Tree};
-use parse::katoparser::*;
-use parse::katovisitor::*;
+use parse::qrustparser::*;
+use parse::qrustvisitor::*;
 
-use crate::nodes::{
-    ASTBinaryOperation, ASTBoolean, ASTFloat, ASTInteger, ASTMatrix, ASTScope, ASTUnaryOperation,
-    ASTUnit,
-};
-use crate::nodes::{ASTNode, Span};
+use crate::nodes::{ASTNode, NodeKind, Span};
 use crate::operator::{BinaryOperator, UnaryOperator};
 
 type R = Box<ASTNode>;
 
-fn get_span<'input>(ctx: &impl KatoParserContext<'input>) -> Span {
+fn get_span<'input>(ctx: &impl QrustParserContext<'input>) -> Span {
     Span {
         start: ctx.start().get_start() as u32,
         end: ctx.stop().get_stop() as u32 + 1,
@@ -33,7 +29,10 @@ macro_rules! debug_visit {
 
 impl Default for R {
     fn default() -> Self {
-        Box::new(ASTNode::new(ASTInteger(69), Span { start: 0, end: 1 }))
+        Box::new(ASTNode::new(
+            NodeKind::Integer(69),
+            Span { start: 0, end: 1 },
+        ))
     }
 }
 
@@ -41,20 +40,20 @@ pub struct ASTVisitor {
     pub temp_result: R, // stores the result of the most recent visit, instead of having functions do regular returns. used by antlr4rust, not me.
 }
 impl ASTVisitor {
-    fn get<'input>(&mut self, x: &Option<Rc<impl KatoParserContext<'input>>>) -> R {
+    fn get<'input>(&mut self, x: &Option<Rc<impl QrustParserContext<'input>>>) -> R {
         self.visit(x.as_ref().unwrap().as_ref())
     }
 }
 
 impl<'input> ParseTreeVisitorCompat<'input> for ASTVisitor {
     type Return = R; // each function returns this value
-    type Node = KatoParserContextType; // each node is represented as this
+    type Node = QrustParserContextType; // each node is represented as this
     fn temp_result(&mut self) -> &mut Self::Return {
         &mut self.temp_result
     }
 }
 
-impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
+impl<'input> QrustVisitorCompat<'input> for ASTVisitor {
     fn visit_scope(&mut self, ctx: &ScopeContext<'input>) -> Self::Return {
         debug_visit!("visit_scope", ctx);
         let mut results = vec![];
@@ -63,7 +62,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
             results.push(result);
         }
         R::new(ASTNode::new(
-            ASTScope {
+            NodeKind::Scope {
                 statements: results,
             },
             get_span(ctx),
@@ -73,7 +72,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
     fn visit_expr_out(&mut self, ctx: &Expr_outContext<'input>) -> Self::Return {
         debug_visit!("visit_expr_out", ctx);
         println!("OUT: '{:?}'", *self.get(&ctx.term()));
-        R::new(ASTNode::new(ASTUnit, get_span(ctx)))
+        R::new(ASTNode::new(NodeKind::Unit, get_span(ctx)))
     }
 
     fn visit_expr_term(&mut self, ctx: &Expr_termContext<'input>) -> Self::Return {
@@ -100,7 +99,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
                 _ => panic!("Unexpected operator for MUL/DIV"),
             };
             R::new(ASTNode::new(
-                ASTBinaryOperation { op, lhs, rhs },
+                NodeKind::BinaryOperation { op, lhs, rhs },
                 get_span(ctx),
             ))
         } else {
@@ -120,7 +119,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
                 _ => panic!("Unexpected operator for ADD/SUB"),
             };
             R::new(ASTNode::new(
-                ASTBinaryOperation { op, lhs, rhs },
+                NodeKind::BinaryOperation { op, lhs, rhs },
                 get_span(ctx),
             ))
         } else {
@@ -137,9 +136,9 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
         debug_visit!("visit_term_neg", ctx);
         let subject = self.get(&ctx.term());
         R::new(ASTNode::new(
-            ASTUnaryOperation {
+            NodeKind::UnaryOperation {
                 op: UnaryOperator::Negate,
-                subject: subject,
+                subject,
             },
             get_span(ctx),
         ))
@@ -157,19 +156,19 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
 
     fn visit_boolean_true(&mut self, ctx: &Boolean_trueContext<'input>) -> Self::Return {
         debug_visit!("visit_boolean_true", ctx);
-        R::new(ASTNode::new(ASTBoolean(true), get_span(ctx)))
+        R::new(ASTNode::new(NodeKind::Boolean(true), get_span(ctx)))
     }
 
     fn visit_boolean_false(&mut self, ctx: &Boolean_falseContext<'input>) -> Self::Return {
         debug_visit!("visit_boolean_false", ctx);
-        R::new(ASTNode::new(ASTBoolean(false), get_span(ctx)))
+        R::new(ASTNode::new(NodeKind::Boolean(false), get_span(ctx)))
     }
 
     fn visit_numeric_integer(&mut self, ctx: &Numeric_integerContext<'input>) -> Self::Return {
         debug_visit!("visit_numeric_integer", ctx);
         type IntT = i128; // uhh seems odd
         R::new(ASTNode::new(
-            ASTInteger(ctx.get_text().parse::<IntT>().unwrap()),
+            NodeKind::Integer(ctx.get_text().parse::<IntT>().unwrap()),
             get_span(ctx),
         ))
     }
@@ -178,7 +177,7 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
         debug_visit!("visit_numeric_real", ctx);
         type FloatT = f64; // ...
         R::new(ASTNode::new(
-            ASTFloat(ctx.get_text().parse::<FloatT>().unwrap()),
+            NodeKind::Float(ctx.get_text().parse::<FloatT>().unwrap()),
             get_span(ctx),
         ))
     }
@@ -196,6 +195,6 @@ impl<'input> KatoVisitorCompat<'input> for ASTVisitor {
             .iter()
             .map(|elem| *self.visit(elem.as_ref()))
             .collect();
-        R::new(ASTNode::new(ASTMatrix { elements }, get_span(ctx)))
+        R::new(ASTNode::new(NodeKind::Matrix { elements }, get_span(ctx)))
     }
 }

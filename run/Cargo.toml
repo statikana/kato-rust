@@ -10,5 +10,5 @@ typed={ path="../typed" }
 antlr-rust="0.3.0-beta"
 
 [[bin]]
-name="kato-rust-run"
+name="qrust-run"
 path="src/main.rs"

@@ -1,23 +1,19 @@
 use std::fmt;
 
-pub mod boolean;
 pub mod float;
 pub mod integer;
 pub mod matrix;
 pub mod ptr;
-pub mod unit;
 
-pub use boolean::BooleanType;
 pub use float::FloatType;
 pub use integer::IntegerType;
 pub use matrix::MatrixType;
 pub use ptr::PtrType;
-pub use unit::UnitType;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Type {
-    Unit(UnitType),
-    Boolean(BooleanType),
+    Unit,
+    Boolean,
     Integer(IntegerType),
     Float(FloatType),
     Ptr(PtrType),
@@ -52,8 +48,8 @@ impl Type {
     /// the `Numeric` impl of the type inside, if it has one
     fn numeric(&self) -> Option<&dyn TypeAlgebra> {
         match self {
-            Type::Unit(_) => None,
-            Type::Boolean(_) => None,
+            Type::Unit => None,
+            Type::Boolean => None,
             Type::Integer(t) => Some(t),
             Type::Float(t) => Some(t),
             Type::Ptr(t) => Some(t),
@@ -94,8 +90,8 @@ impl TypeAlgebra for Type {
 impl fmt::Display for Type {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Type::Unit(t) => f.write_str("unit"),
-            Type::Boolean(t) => f.write_str("bool"),
+            Type::Unit => f.write_str("unit"),
+            Type::Boolean => f.write_str("bool"),
             Type::Integer(t) => t.fmt(f),
             Type::Float(t) => t.fmt(f),
             Type::Ptr(t) => t.fmt(f),

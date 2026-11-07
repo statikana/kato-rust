@@ -5,7 +5,7 @@ use std::time;
 use antlr_rust::InputStream;
 use antlr_rust::common_token_stream::CommonTokenStream;
 use ast::ast_visitor;
-use parse::katovisitor::KatoVisitorCompat;
+use parse::qrustvisitor::QrustVisitorCompat;
 use typed::typecheck;
 
 fn read(path: &str) -> Vec<u8> {
@@ -28,13 +28,13 @@ fn main() {
     //           lexer              parser             ASTVisitor     typechecker
     // println!("Creating input streams...");
     let input_stream = InputStream::new(&data[..]);
-    let lexer = parse::katolexer::KatoLexer::new(input_stream);
+    let lexer = parse::qrustlexer::QrustLexer::new(input_stream);
     let token_stream = CommonTokenStream::new(lexer);
-    let mut parser = parse::katoparser::KatoParser::new(token_stream);
+    let mut parser = parse::qrustparser::QrustParser::new(token_stream);
 
     let mut ast_visitor = ast_visitor::ASTVisitor {
         temp_result: Box::new(ast::nodes::ASTNode::new(
-            ast::nodes::ASTUnit,
+            ast::nodes::NodeKind::Unit,
             ast::nodes::Span { start: 0, end: 1 },
         )),
     };
@@ -73,7 +73,9 @@ fn main() {
         .as_millis()
     );
 
-    for statement in typed_ast.children {
-        println!("{:?}", statement);
+    if let ast::nodes::NodeKind::Scope { statements } = typed_ast.kind {
+        for statement in statements {
+            println!("{:?}", statement);
+        }
     }
 }

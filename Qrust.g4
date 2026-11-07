@@ -1,4 +1,4 @@
-grammar Kato;
+grammar Qrust;
 
 scope: '{' (expr ';')+ '}';
 

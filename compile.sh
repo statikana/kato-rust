@@ -5,11 +5,11 @@
 
 
 ### VARS AND INFO
-PROJECT_NAME='kato-rust' # whatever is in Cargo.toml
+PROJECT_NAME='qrust' # whatever is in Cargo.toml
 
-GRAMMAR='Kato' # WITHOUT THE .g4 suffix
+GRAMMAR='Qrust' # WITHOUT THE .g4 suffix
 GRAMMAR_SUFFIX='g4'
-GRAMMAR_LOWER_CASE='kato' # for imports and stuff
+GRAMMAR_LOWER_CASE='qrust' # for imports and stuff
 
 ANTLR4_JAR='./.antlrbin/antlr4-4.8-2-SNAPSHOT-complete.jar'  # must be from rrevenantt/antlr4rust releases for -Dlanguage=Rust
 

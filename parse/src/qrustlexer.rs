@@ -1,4 +1,4 @@
-// Generated from Kato.g4 by ANTLR 4.8
+// Generated from Qrust.g4 by ANTLR 4.8
 #![allow(dead_code)]
 #![allow(nonstandard_style)]
 #![allow(unused_imports)]
@@ -112,27 +112,27 @@ pub type LocalTokenFactory<'input> = CommonTokenFactory;
 
 type From<'a> = <LocalTokenFactory<'a> as TokenFactory<'a>>::From;
 
-pub struct KatoLexer<'input, Input: CharStream<From<'input>>> {
-    base: BaseLexer<'input, KatoLexerActions, Input, LocalTokenFactory<'input>>,
+pub struct QrustLexer<'input, Input: CharStream<From<'input>>> {
+    base: BaseLexer<'input, QrustLexerActions, Input, LocalTokenFactory<'input>>,
 }
 
-antlr_rust::tid! { impl<'input,Input> TidAble<'input> for KatoLexer<'input,Input> where Input:CharStream<From<'input> > }
+antlr_rust::tid! { impl<'input,Input> TidAble<'input> for QrustLexer<'input,Input> where Input:CharStream<From<'input> > }
 
-impl<'input, Input: CharStream<From<'input>>> Deref for KatoLexer<'input, Input> {
-    type Target = BaseLexer<'input, KatoLexerActions, Input, LocalTokenFactory<'input>>;
+impl<'input, Input: CharStream<From<'input>>> Deref for QrustLexer<'input, Input> {
+    type Target = BaseLexer<'input, QrustLexerActions, Input, LocalTokenFactory<'input>>;
 
     fn deref(&self) -> &Self::Target {
         &self.base
     }
 }
 
-impl<'input, Input: CharStream<From<'input>>> DerefMut for KatoLexer<'input, Input> {
+impl<'input, Input: CharStream<From<'input>>> DerefMut for QrustLexer<'input, Input> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.base
     }
 }
 
-impl<'input, Input: CharStream<From<'input>>> KatoLexer<'input, Input> {
+impl<'input, Input: CharStream<From<'input>>> QrustLexer<'input, Input> {
     fn get_rule_names(&self) -> &'static [&'static str] {
         &ruleNames
     }
@@ -145,7 +145,7 @@ impl<'input, Input: CharStream<From<'input>>> KatoLexer<'input, Input> {
     }
 
     fn get_grammar_file_name(&self) -> &'static str {
-        "KatoLexer.g4"
+        "QrustLexer.g4"
     }
 
     pub fn new_with_token_factory(input: Input, tf: &'input LocalTokenFactory<'input>) -> Self {
@@ -158,44 +158,44 @@ impl<'input, Input: CharStream<From<'input>>> KatoLexer<'input, Input> {
                     _decision_to_DFA.clone(),
                     _shared_context_cache.clone(),
                 ),
-                KatoLexerActions {},
+                QrustLexerActions {},
                 tf,
             ),
         }
     }
 }
 
-impl<'input, Input: CharStream<From<'input>>> KatoLexer<'input, Input>
+impl<'input, Input: CharStream<From<'input>>> QrustLexer<'input, Input>
 where
     &'input LocalTokenFactory<'input>: Default,
 {
     pub fn new(input: Input) -> Self {
-        KatoLexer::new_with_token_factory(input, <&LocalTokenFactory<'input> as Default>::default())
+        QrustLexer::new_with_token_factory(input, <&LocalTokenFactory<'input> as Default>::default())
     }
 }
 
-pub struct KatoLexerActions {}
+pub struct QrustLexerActions {}
 
-impl KatoLexerActions {}
+impl QrustLexerActions {}
 
 impl<'input, Input: CharStream<From<'input>>>
-    Actions<'input, BaseLexer<'input, KatoLexerActions, Input, LocalTokenFactory<'input>>>
-    for KatoLexerActions
+    Actions<'input, BaseLexer<'input, QrustLexerActions, Input, LocalTokenFactory<'input>>>
+    for QrustLexerActions
 {
 }
 
-impl<'input, Input: CharStream<From<'input>>> KatoLexer<'input, Input> {}
+impl<'input, Input: CharStream<From<'input>>> QrustLexer<'input, Input> {}
 
 impl<'input, Input: CharStream<From<'input>>>
-    LexerRecog<'input, BaseLexer<'input, KatoLexerActions, Input, LocalTokenFactory<'input>>>
-    for KatoLexerActions
+    LexerRecog<'input, BaseLexer<'input, QrustLexerActions, Input, LocalTokenFactory<'input>>>
+    for QrustLexerActions
 {
 }
-impl<'input> TokenAware<'input> for KatoLexerActions {
+impl<'input> TokenAware<'input> for QrustLexerActions {
     type TF = LocalTokenFactory<'input>;
 }
 
-impl<'input, Input: CharStream<From<'input>>> TokenSource<'input> for KatoLexer<'input, Input> {
+impl<'input, Input: CharStream<From<'input>>> TokenSource<'input> for QrustLexer<'input, Input> {
     type TF = LocalTokenFactory<'input>;
 
     fn next_token(&mut self) -> <Self::TF as TokenFactory<'input>>::Tok {

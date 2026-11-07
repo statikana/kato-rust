@@ -1,4 +1,4 @@
-// Generated from Kato.g4 by ANTLR 4.8
+// Generated from Qrust.g4 by ANTLR 4.8
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
@@ -6,8 +6,8 @@
 #![allow(unused_imports)]
 #![allow(unused_mut)]
 #![allow(unused_braces)]
-use super::katolistener::*;
-use super::katovisitor::*;
+use super::qrustlistener::*;
+use super::qrustvisitor::*;
 use antlr_rust::PredictionContextCache;
 use antlr_rust::TokenSource;
 use antlr_rust::atn::{ATN, INVALID_ALT};
@@ -121,20 +121,20 @@ lazy_static! {
 
 type BaseParserType<'input, I> = BaseParser<
     'input,
-    KatoParserExt<'input>,
+    QrustParserExt<'input>,
     I,
-    KatoParserContextType,
-    dyn KatoListener<'input> + 'input,
+    QrustParserContextType,
+    dyn QrustListener<'input> + 'input,
 >;
 
 type TokenType<'input> = <LocalTokenFactory<'input> as TokenFactory<'input>>::Tok;
 pub type LocalTokenFactory<'input> = CommonTokenFactory;
 
-pub type KatoTreeWalker<'input, 'a> =
-    ParseTreeWalker<'input, 'a, KatoParserContextType, dyn KatoListener<'input> + 'a>;
+pub type QrustTreeWalker<'input, 'a> =
+    ParseTreeWalker<'input, 'a, QrustParserContextType, dyn QrustListener<'input> + 'a>;
 
-/// Parser for Kato grammar
-pub struct KatoParser<'input, I, H>
+/// Parser for Qrust grammar
+pub struct QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -145,7 +145,7 @@ where
     pub err_handler: H,
 }
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -169,7 +169,7 @@ where
             base: BaseParser::new_base_parser(
                 input,
                 Arc::clone(&interpreter),
-                KatoParserExt {
+                QrustParserExt {
                     _pd: Default::default(),
                 },
             ),
@@ -182,7 +182,7 @@ where
 
 type DynStrategy<'input, I> = Box<dyn ErrorStrategy<'input, BaseParserType<'input, I>> + 'input>;
 
-impl<'input, I> KatoParser<'input, I, DynStrategy<'input, I>>
+impl<'input, I> QrustParser<'input, I, DynStrategy<'input, I>>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
 {
@@ -191,7 +191,7 @@ where
     }
 }
 
-impl<'input, I> KatoParser<'input, I, DefaultErrorStrategy<'input, KatoParserContextType>>
+impl<'input, I> QrustParser<'input, I, DefaultErrorStrategy<'input, QrustParserContextType>>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
 {
@@ -200,41 +200,41 @@ where
     }
 }
 
-/// Trait for monomorphized trait object that corresponds to the nodes of parse tree generated for KatoParser
-pub trait KatoParserContext<'input>:
-    for<'x> Listenable<dyn KatoListener<'input> + 'x>
-    + for<'x> Visitable<dyn KatoVisitor<'input> + 'x>
-    + ParserRuleContext<'input, TF = LocalTokenFactory<'input>, Ctx = KatoParserContextType>
+/// Trait for monomorphized trait object that corresponds to the nodes of parse tree generated for QrustParser
+pub trait QrustParserContext<'input>:
+    for<'x> Listenable<dyn QrustListener<'input> + 'x>
+    + for<'x> Visitable<dyn QrustVisitor<'input> + 'x>
+    + ParserRuleContext<'input, TF = LocalTokenFactory<'input>, Ctx = QrustParserContextType>
 {
 }
 
-antlr_rust::coerce_from! { 'input : KatoParserContext<'input> }
+antlr_rust::coerce_from! { 'input : QrustParserContext<'input> }
 
-impl<'input, 'x, T> VisitableDyn<T> for dyn KatoParserContext<'input> + 'input
+impl<'input, 'x, T> VisitableDyn<T> for dyn QrustParserContext<'input> + 'input
 where
-    T: KatoVisitor<'input> + 'x,
+    T: QrustVisitor<'input> + 'x,
 {
     fn accept_dyn(&self, visitor: &mut T) {
-        self.accept(visitor as &mut (dyn KatoVisitor<'input> + 'x))
+        self.accept(visitor as &mut (dyn QrustVisitor<'input> + 'x))
     }
 }
 
-impl<'input> KatoParserContext<'input> for TerminalNode<'input, KatoParserContextType> {}
-impl<'input> KatoParserContext<'input> for ErrorNode<'input, KatoParserContextType> {}
+impl<'input> QrustParserContext<'input> for TerminalNode<'input, QrustParserContextType> {}
+impl<'input> QrustParserContext<'input> for ErrorNode<'input, QrustParserContextType> {}
 
-antlr_rust::tid! { impl<'input> TidAble<'input> for dyn KatoParserContext<'input> + 'input }
+antlr_rust::tid! { impl<'input> TidAble<'input> for dyn QrustParserContext<'input> + 'input }
 
-antlr_rust::tid! { impl<'input> TidAble<'input> for dyn KatoListener<'input> + 'input }
+antlr_rust::tid! { impl<'input> TidAble<'input> for dyn QrustListener<'input> + 'input }
 
-pub struct KatoParserContextType;
-antlr_rust::tid! {KatoParserContextType}
+pub struct QrustParserContextType;
+antlr_rust::tid! {QrustParserContextType}
 
-impl<'input> ParserNodeType<'input> for KatoParserContextType {
+impl<'input> ParserNodeType<'input> for QrustParserContextType {
     type TF = LocalTokenFactory<'input>;
-    type Type = dyn KatoParserContext<'input> + 'input;
+    type Type = dyn QrustParserContext<'input> + 'input;
 }
 
-impl<'input, I, H> Deref for KatoParser<'input, I, H>
+impl<'input, I, H> Deref for QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -246,7 +246,7 @@ where
     }
 }
 
-impl<'input, I, H> DerefMut for KatoParser<'input, I, H>
+impl<'input, I, H> DerefMut for QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -256,27 +256,27 @@ where
     }
 }
 
-pub struct KatoParserExt<'input> {
+pub struct QrustParserExt<'input> {
     _pd: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserExt<'input> {}
-antlr_rust::tid! { KatoParserExt<'a> }
+impl<'input> QrustParserExt<'input> {}
+antlr_rust::tid! { QrustParserExt<'a> }
 
-impl<'input> TokenAware<'input> for KatoParserExt<'input> {
+impl<'input> TokenAware<'input> for QrustParserExt<'input> {
     type TF = LocalTokenFactory<'input>;
 }
 
 impl<'input, I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>>
-    ParserRecog<'input, BaseParserType<'input, I>> for KatoParserExt<'input>
+    ParserRecog<'input, BaseParserType<'input, I>> for QrustParserExt<'input>
 {
 }
 
 impl<'input, I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>>
-    Actions<'input, BaseParserType<'input, I>> for KatoParserExt<'input>
+    Actions<'input, BaseParserType<'input, I>> for QrustParserExt<'input>
 {
     fn get_grammar_file_name(&self) -> &str {
-        "Kato.g4"
+        "Qrust.g4"
     }
 
     fn get_rule_names(&self) -> &[&str] {
@@ -287,13 +287,13 @@ impl<'input, I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'i
         &**VOCABULARY
     }
     fn sempred(
-        _localctx: Option<&(dyn KatoParserContext<'input> + 'input)>,
+        _localctx: Option<&(dyn QrustParserContext<'input> + 'input)>,
         rule_index: isize,
         pred_index: isize,
         recog: &mut BaseParserType<'input, I>,
     ) -> bool {
         match rule_index {
-            2 => KatoParser::<'input, I, _>::term_sempred(
+            2 => QrustParser::<'input, I, _>::term_sempred(
                 _localctx.and_then(|x| x.downcast_ref()),
                 pred_index,
                 recog,
@@ -303,7 +303,7 @@ impl<'input, I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'i
     }
 }
 
-impl<'input, I> KatoParser<'input, I, DefaultErrorStrategy<'input, KatoParserContextType>>
+impl<'input, I> QrustParser<'input, I, DefaultErrorStrategy<'input, QrustParserContextType>>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
 {
@@ -329,28 +329,28 @@ pub struct ScopeContextExt<'input> {
     ph: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserContext<'input> for ScopeContext<'input> {}
+impl<'input> QrustParserContext<'input> for ScopeContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for ScopeContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for ScopeContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_scope(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_scope(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for ScopeContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for ScopeContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_scope(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for ScopeContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_scope
     }
@@ -360,7 +360,7 @@ antlr_rust::tid! {ScopeContextExt<'a>}
 
 impl<'input> ScopeContextExt<'input> {
     fn new(
-        parent: Option<Rc<dyn KatoParserContext<'input> + 'input>>,
+        parent: Option<Rc<dyn QrustParserContext<'input> + 'input>>,
         invoking_state: isize,
     ) -> Rc<ScopeContextAll<'input>> {
         Rc::new(BaseParserRuleContext::new_parser_ctx(
@@ -372,7 +372,7 @@ impl<'input> ScopeContextExt<'input> {
 }
 
 pub trait ScopeContextAttrs<'input>:
-    KatoParserContext<'input> + BorrowMut<ScopeContextExt<'input>>
+    QrustParserContext<'input> + BorrowMut<ScopeContextExt<'input>>
 {
     fn expr_all(&self) -> Vec<Rc<ExprContextAll<'input>>>
     where
@@ -390,7 +390,7 @@ pub trait ScopeContextAttrs<'input>:
 
 impl<'input> ScopeContextAttrs<'input> for ScopeContext<'input> {}
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -471,7 +471,7 @@ antlr_rust::tid! {ExprContextAll<'a>}
 
 impl<'input> antlr_rust::parser_rule_context::DerefSeal for ExprContextAll<'input> {}
 
-impl<'input> KatoParserContext<'input> for ExprContextAll<'input> {}
+impl<'input> QrustParserContext<'input> for ExprContextAll<'input> {}
 
 impl<'input> Deref for ExprContextAll<'input> {
     type Target = dyn ExprContextAttrs<'input> + 'input;
@@ -484,16 +484,16 @@ impl<'input> Deref for ExprContextAll<'input> {
         }
     }
 }
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for ExprContextAll<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for ExprContextAll<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         self.deref().accept(visitor)
     }
 }
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for ExprContextAll<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for ExprContextAll<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().enter(listener)
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().exit(listener)
     }
 }
@@ -505,15 +505,15 @@ pub struct ExprContextExt<'input> {
     ph: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserContext<'input> for ExprContext<'input> {}
+impl<'input> QrustParserContext<'input> for ExprContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for ExprContext<'input> {}
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for ExprContext<'input> {}
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for ExprContext<'input> {}
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for ExprContext<'input> {}
 
 impl<'input> CustomRuleContext<'input> for ExprContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_expr
     }
@@ -523,7 +523,7 @@ antlr_rust::tid! {ExprContextExt<'a>}
 
 impl<'input> ExprContextExt<'input> {
     fn new(
-        parent: Option<Rc<dyn KatoParserContext<'input> + 'input>>,
+        parent: Option<Rc<dyn QrustParserContext<'input> + 'input>>,
         invoking_state: isize,
     ) -> Rc<ExprContextAll<'input>> {
         Rc::new(ExprContextAll::Error(
@@ -537,7 +537,7 @@ impl<'input> ExprContextExt<'input> {
 }
 
 pub trait ExprContextAttrs<'input>:
-    KatoParserContext<'input> + BorrowMut<ExprContextExt<'input>>
+    QrustParserContext<'input> + BorrowMut<ExprContextExt<'input>>
 {
 }
 
@@ -545,10 +545,10 @@ impl<'input> ExprContextAttrs<'input> for ExprContext<'input> {}
 
 pub type Expr_outContext<'input> = BaseParserRuleContext<'input, Expr_outContextExt<'input>>;
 
-pub trait Expr_outContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Expr_outContextAttrs<'input>: QrustParserContext<'input> {
     /// Retrieves first TerminalNode corresponding to token PAREN_L
     /// Returns `None` if there is no child corresponding to token PAREN_L
-    fn PAREN_L(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn PAREN_L(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -562,7 +562,7 @@ pub trait Expr_outContextAttrs<'input>: KatoParserContext<'input> {
     }
     /// Retrieves first TerminalNode corresponding to token PAREN_R
     /// Returns `None` if there is no child corresponding to token PAREN_R
-    fn PAREN_R(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn PAREN_R(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -579,28 +579,28 @@ pub struct Expr_outContextExt<'input> {
 
 antlr_rust::tid! {Expr_outContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Expr_outContext<'input> {}
+impl<'input> QrustParserContext<'input> for Expr_outContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Expr_outContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Expr_outContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_expr_out(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_expr_out(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Expr_outContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Expr_outContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_expr_out(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Expr_outContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_expr
     }
@@ -636,7 +636,7 @@ impl<'input> Expr_outContextExt<'input> {
 
 pub type Expr_termContext<'input> = BaseParserRuleContext<'input, Expr_termContextExt<'input>>;
 
-pub trait Expr_termContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Expr_termContextAttrs<'input>: QrustParserContext<'input> {
     fn term(&self) -> Option<Rc<TermContextAll<'input>>>
     where
         Self: Sized,
@@ -654,28 +654,28 @@ pub struct Expr_termContextExt<'input> {
 
 antlr_rust::tid! {Expr_termContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Expr_termContext<'input> {}
+impl<'input> QrustParserContext<'input> for Expr_termContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Expr_termContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Expr_termContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_expr_term(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_expr_term(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Expr_termContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Expr_termContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_expr_term(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Expr_termContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_expr
     }
@@ -709,7 +709,7 @@ impl<'input> Expr_termContextExt<'input> {
     }
 }
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -789,7 +789,7 @@ antlr_rust::tid! {TermContextAll<'a>}
 
 impl<'input> antlr_rust::parser_rule_context::DerefSeal for TermContextAll<'input> {}
 
-impl<'input> KatoParserContext<'input> for TermContextAll<'input> {}
+impl<'input> QrustParserContext<'input> for TermContextAll<'input> {}
 
 impl<'input> Deref for TermContextAll<'input> {
     type Target = dyn TermContextAttrs<'input> + 'input;
@@ -805,16 +805,16 @@ impl<'input> Deref for TermContextAll<'input> {
         }
     }
 }
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for TermContextAll<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for TermContextAll<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         self.deref().accept(visitor)
     }
 }
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for TermContextAll<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for TermContextAll<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().enter(listener)
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().exit(listener)
     }
 }
@@ -826,15 +826,15 @@ pub struct TermContextExt<'input> {
     ph: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserContext<'input> for TermContext<'input> {}
+impl<'input> QrustParserContext<'input> for TermContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for TermContext<'input> {}
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for TermContext<'input> {}
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for TermContext<'input> {}
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for TermContext<'input> {}
 
 impl<'input> CustomRuleContext<'input> for TermContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_term
     }
@@ -844,7 +844,7 @@ antlr_rust::tid! {TermContextExt<'a>}
 
 impl<'input> TermContextExt<'input> {
     fn new(
-        parent: Option<Rc<dyn KatoParserContext<'input> + 'input>>,
+        parent: Option<Rc<dyn QrustParserContext<'input> + 'input>>,
         invoking_state: isize,
     ) -> Rc<TermContextAll<'input>> {
         Rc::new(TermContextAll::Error(
@@ -858,7 +858,7 @@ impl<'input> TermContextExt<'input> {
 }
 
 pub trait TermContextAttrs<'input>:
-    KatoParserContext<'input> + BorrowMut<TermContextExt<'input>>
+    QrustParserContext<'input> + BorrowMut<TermContextExt<'input>>
 {
 }
 
@@ -867,7 +867,7 @@ impl<'input> TermContextAttrs<'input> for TermContext<'input> {}
 pub type Term_add_subContext<'input> =
     BaseParserRuleContext<'input, Term_add_subContextExt<'input>>;
 
-pub trait Term_add_subContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Term_add_subContextAttrs<'input>: QrustParserContext<'input> {
     fn term_all(&self) -> Vec<Rc<TermContextAll<'input>>>
     where
         Self: Sized,
@@ -882,7 +882,7 @@ pub trait Term_add_subContextAttrs<'input>: KatoParserContext<'input> {
     }
     /// Retrieves first TerminalNode corresponding to token ADD
     /// Returns `None` if there is no child corresponding to token ADD
-    fn ADD(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn ADD(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -890,7 +890,7 @@ pub trait Term_add_subContextAttrs<'input>: KatoParserContext<'input> {
     }
     /// Retrieves first TerminalNode corresponding to token SUB
     /// Returns `None` if there is no child corresponding to token SUB
-    fn SUB(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn SUB(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -909,28 +909,28 @@ pub struct Term_add_subContextExt<'input> {
 
 antlr_rust::tid! {Term_add_subContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Term_add_subContext<'input> {}
+impl<'input> QrustParserContext<'input> for Term_add_subContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Term_add_subContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Term_add_subContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_term_add_sub(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_term_add_sub(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Term_add_subContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Term_add_subContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_term_add_sub(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Term_add_subContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_term
     }
@@ -969,7 +969,7 @@ impl<'input> Term_add_subContextExt<'input> {
 pub type Term_literalContext<'input> =
     BaseParserRuleContext<'input, Term_literalContextExt<'input>>;
 
-pub trait Term_literalContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Term_literalContextAttrs<'input>: QrustParserContext<'input> {
     fn literal(&self) -> Option<Rc<LiteralContextAll<'input>>>
     where
         Self: Sized,
@@ -987,28 +987,28 @@ pub struct Term_literalContextExt<'input> {
 
 antlr_rust::tid! {Term_literalContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Term_literalContext<'input> {}
+impl<'input> QrustParserContext<'input> for Term_literalContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Term_literalContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Term_literalContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_term_literal(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_term_literal(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Term_literalContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Term_literalContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_term_literal(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Term_literalContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_term
     }
@@ -1044,10 +1044,10 @@ impl<'input> Term_literalContextExt<'input> {
 
 pub type Term_negContext<'input> = BaseParserRuleContext<'input, Term_negContextExt<'input>>;
 
-pub trait Term_negContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Term_negContextAttrs<'input>: QrustParserContext<'input> {
     /// Retrieves first TerminalNode corresponding to token SUB
     /// Returns `None` if there is no child corresponding to token SUB
-    fn SUB(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn SUB(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -1070,28 +1070,28 @@ pub struct Term_negContextExt<'input> {
 
 antlr_rust::tid! {Term_negContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Term_negContext<'input> {}
+impl<'input> QrustParserContext<'input> for Term_negContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Term_negContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Term_negContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_term_neg(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_term_neg(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Term_negContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Term_negContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_term_neg(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Term_negContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_term
     }
@@ -1128,7 +1128,7 @@ impl<'input> Term_negContextExt<'input> {
 pub type Term_mul_divContext<'input> =
     BaseParserRuleContext<'input, Term_mul_divContextExt<'input>>;
 
-pub trait Term_mul_divContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Term_mul_divContextAttrs<'input>: QrustParserContext<'input> {
     fn term_all(&self) -> Vec<Rc<TermContextAll<'input>>>
     where
         Self: Sized,
@@ -1143,7 +1143,7 @@ pub trait Term_mul_divContextAttrs<'input>: KatoParserContext<'input> {
     }
     /// Retrieves first TerminalNode corresponding to token MUL
     /// Returns `None` if there is no child corresponding to token MUL
-    fn MUL(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn MUL(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -1151,7 +1151,7 @@ pub trait Term_mul_divContextAttrs<'input>: KatoParserContext<'input> {
     }
     /// Retrieves first TerminalNode corresponding to token DIV
     /// Returns `None` if there is no child corresponding to token DIV
-    fn DIV(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn DIV(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -1170,28 +1170,28 @@ pub struct Term_mul_divContextExt<'input> {
 
 antlr_rust::tid! {Term_mul_divContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Term_mul_divContext<'input> {}
+impl<'input> QrustParserContext<'input> for Term_mul_divContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Term_mul_divContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Term_mul_divContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_term_mul_div(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_term_mul_div(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Term_mul_divContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Term_mul_divContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_term_mul_div(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Term_mul_divContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_term
     }
@@ -1229,10 +1229,10 @@ impl<'input> Term_mul_divContextExt<'input> {
 
 pub type Term_parenContext<'input> = BaseParserRuleContext<'input, Term_parenContextExt<'input>>;
 
-pub trait Term_parenContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Term_parenContextAttrs<'input>: QrustParserContext<'input> {
     /// Retrieves first TerminalNode corresponding to token PAREN_L
     /// Returns `None` if there is no child corresponding to token PAREN_L
-    fn PAREN_L(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn PAREN_L(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -1246,7 +1246,7 @@ pub trait Term_parenContextAttrs<'input>: KatoParserContext<'input> {
     }
     /// Retrieves first TerminalNode corresponding to token PAREN_R
     /// Returns `None` if there is no child corresponding to token PAREN_R
-    fn PAREN_R(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn PAREN_R(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -1263,28 +1263,28 @@ pub struct Term_parenContextExt<'input> {
 
 antlr_rust::tid! {Term_parenContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Term_parenContext<'input> {}
+impl<'input> QrustParserContext<'input> for Term_parenContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Term_parenContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Term_parenContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_term_paren(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_term_paren(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Term_parenContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Term_parenContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_term_paren(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Term_parenContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_term
     }
@@ -1318,7 +1318,7 @@ impl<'input> Term_parenContextExt<'input> {
     }
 }
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -1553,7 +1553,7 @@ antlr_rust::tid! {LiteralContextAll<'a>}
 
 impl<'input> antlr_rust::parser_rule_context::DerefSeal for LiteralContextAll<'input> {}
 
-impl<'input> KatoParserContext<'input> for LiteralContextAll<'input> {}
+impl<'input> QrustParserContext<'input> for LiteralContextAll<'input> {}
 
 impl<'input> Deref for LiteralContextAll<'input> {
     type Target = dyn LiteralContextAttrs<'input> + 'input;
@@ -1567,16 +1567,16 @@ impl<'input> Deref for LiteralContextAll<'input> {
         }
     }
 }
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for LiteralContextAll<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for LiteralContextAll<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         self.deref().accept(visitor)
     }
 }
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for LiteralContextAll<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for LiteralContextAll<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().enter(listener)
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().exit(listener)
     }
 }
@@ -1588,15 +1588,15 @@ pub struct LiteralContextExt<'input> {
     ph: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserContext<'input> for LiteralContext<'input> {}
+impl<'input> QrustParserContext<'input> for LiteralContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for LiteralContext<'input> {}
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for LiteralContext<'input> {}
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for LiteralContext<'input> {}
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for LiteralContext<'input> {}
 
 impl<'input> CustomRuleContext<'input> for LiteralContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_literal
     }
@@ -1606,7 +1606,7 @@ antlr_rust::tid! {LiteralContextExt<'a>}
 
 impl<'input> LiteralContextExt<'input> {
     fn new(
-        parent: Option<Rc<dyn KatoParserContext<'input> + 'input>>,
+        parent: Option<Rc<dyn QrustParserContext<'input> + 'input>>,
         invoking_state: isize,
     ) -> Rc<LiteralContextAll<'input>> {
         Rc::new(LiteralContextAll::Error(
@@ -1620,7 +1620,7 @@ impl<'input> LiteralContextExt<'input> {
 }
 
 pub trait LiteralContextAttrs<'input>:
-    KatoParserContext<'input> + BorrowMut<LiteralContextExt<'input>>
+    QrustParserContext<'input> + BorrowMut<LiteralContextExt<'input>>
 {
 }
 
@@ -1629,7 +1629,7 @@ impl<'input> LiteralContextAttrs<'input> for LiteralContext<'input> {}
 pub type Value_booleanContext<'input> =
     BaseParserRuleContext<'input, Value_booleanContextExt<'input>>;
 
-pub trait Value_booleanContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Value_booleanContextAttrs<'input>: QrustParserContext<'input> {
     fn boolean(&self) -> Option<Rc<BooleanContextAll<'input>>>
     where
         Self: Sized,
@@ -1647,28 +1647,28 @@ pub struct Value_booleanContextExt<'input> {
 
 antlr_rust::tid! {Value_booleanContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Value_booleanContext<'input> {}
+impl<'input> QrustParserContext<'input> for Value_booleanContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Value_booleanContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Value_booleanContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_value_boolean(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_value_boolean(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Value_booleanContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Value_booleanContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_value_boolean(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Value_booleanContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_literal
     }
@@ -1705,7 +1705,7 @@ impl<'input> Value_booleanContextExt<'input> {
 pub type Value_numericContext<'input> =
     BaseParserRuleContext<'input, Value_numericContextExt<'input>>;
 
-pub trait Value_numericContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Value_numericContextAttrs<'input>: QrustParserContext<'input> {
     fn numeric(&self) -> Option<Rc<NumericContextAll<'input>>>
     where
         Self: Sized,
@@ -1723,28 +1723,28 @@ pub struct Value_numericContextExt<'input> {
 
 antlr_rust::tid! {Value_numericContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Value_numericContext<'input> {}
+impl<'input> QrustParserContext<'input> for Value_numericContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Value_numericContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Value_numericContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_value_numeric(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_value_numeric(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Value_numericContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Value_numericContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_value_numeric(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Value_numericContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_literal
     }
@@ -1781,7 +1781,7 @@ impl<'input> Value_numericContextExt<'input> {
 pub type Value_matrixContext<'input> =
     BaseParserRuleContext<'input, Value_matrixContextExt<'input>>;
 
-pub trait Value_matrixContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Value_matrixContextAttrs<'input>: QrustParserContext<'input> {
     fn matrix(&self) -> Option<Rc<MatrixContextAll<'input>>>
     where
         Self: Sized,
@@ -1799,28 +1799,28 @@ pub struct Value_matrixContextExt<'input> {
 
 antlr_rust::tid! {Value_matrixContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Value_matrixContext<'input> {}
+impl<'input> QrustParserContext<'input> for Value_matrixContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Value_matrixContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Value_matrixContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_value_matrix(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_value_matrix(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Value_matrixContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Value_matrixContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_value_matrix(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Value_matrixContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_literal
     }
@@ -1854,7 +1854,7 @@ impl<'input> Value_matrixContextExt<'input> {
     }
 }
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -1933,7 +1933,7 @@ antlr_rust::tid! {BooleanContextAll<'a>}
 
 impl<'input> antlr_rust::parser_rule_context::DerefSeal for BooleanContextAll<'input> {}
 
-impl<'input> KatoParserContext<'input> for BooleanContextAll<'input> {}
+impl<'input> QrustParserContext<'input> for BooleanContextAll<'input> {}
 
 impl<'input> Deref for BooleanContextAll<'input> {
     type Target = dyn BooleanContextAttrs<'input> + 'input;
@@ -1946,16 +1946,16 @@ impl<'input> Deref for BooleanContextAll<'input> {
         }
     }
 }
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for BooleanContextAll<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for BooleanContextAll<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         self.deref().accept(visitor)
     }
 }
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for BooleanContextAll<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for BooleanContextAll<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().enter(listener)
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().exit(listener)
     }
 }
@@ -1967,15 +1967,15 @@ pub struct BooleanContextExt<'input> {
     ph: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserContext<'input> for BooleanContext<'input> {}
+impl<'input> QrustParserContext<'input> for BooleanContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for BooleanContext<'input> {}
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for BooleanContext<'input> {}
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for BooleanContext<'input> {}
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for BooleanContext<'input> {}
 
 impl<'input> CustomRuleContext<'input> for BooleanContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_boolean
     }
@@ -1985,7 +1985,7 @@ antlr_rust::tid! {BooleanContextExt<'a>}
 
 impl<'input> BooleanContextExt<'input> {
     fn new(
-        parent: Option<Rc<dyn KatoParserContext<'input> + 'input>>,
+        parent: Option<Rc<dyn QrustParserContext<'input> + 'input>>,
         invoking_state: isize,
     ) -> Rc<BooleanContextAll<'input>> {
         Rc::new(BooleanContextAll::Error(
@@ -1999,7 +1999,7 @@ impl<'input> BooleanContextExt<'input> {
 }
 
 pub trait BooleanContextAttrs<'input>:
-    KatoParserContext<'input> + BorrowMut<BooleanContextExt<'input>>
+    QrustParserContext<'input> + BorrowMut<BooleanContextExt<'input>>
 {
 }
 
@@ -2008,10 +2008,10 @@ impl<'input> BooleanContextAttrs<'input> for BooleanContext<'input> {}
 pub type Boolean_falseContext<'input> =
     BaseParserRuleContext<'input, Boolean_falseContextExt<'input>>;
 
-pub trait Boolean_falseContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Boolean_falseContextAttrs<'input>: QrustParserContext<'input> {
     /// Retrieves first TerminalNode corresponding to token FALSE
     /// Returns `None` if there is no child corresponding to token FALSE
-    fn FALSE(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn FALSE(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -2028,28 +2028,28 @@ pub struct Boolean_falseContextExt<'input> {
 
 antlr_rust::tid! {Boolean_falseContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Boolean_falseContext<'input> {}
+impl<'input> QrustParserContext<'input> for Boolean_falseContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Boolean_falseContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Boolean_falseContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_boolean_false(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_boolean_false(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Boolean_falseContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Boolean_falseContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_boolean_false(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Boolean_falseContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_boolean
     }
@@ -2086,10 +2086,10 @@ impl<'input> Boolean_falseContextExt<'input> {
 pub type Boolean_trueContext<'input> =
     BaseParserRuleContext<'input, Boolean_trueContextExt<'input>>;
 
-pub trait Boolean_trueContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Boolean_trueContextAttrs<'input>: QrustParserContext<'input> {
     /// Retrieves first TerminalNode corresponding to token TRUE
     /// Returns `None` if there is no child corresponding to token TRUE
-    fn TRUE(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn TRUE(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -2106,28 +2106,28 @@ pub struct Boolean_trueContextExt<'input> {
 
 antlr_rust::tid! {Boolean_trueContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Boolean_trueContext<'input> {}
+impl<'input> QrustParserContext<'input> for Boolean_trueContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Boolean_trueContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Boolean_trueContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_boolean_true(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_boolean_true(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Boolean_trueContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Boolean_trueContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_boolean_true(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Boolean_trueContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_boolean
     }
@@ -2161,7 +2161,7 @@ impl<'input> Boolean_trueContextExt<'input> {
     }
 }
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -2227,7 +2227,7 @@ antlr_rust::tid! {NumericContextAll<'a>}
 
 impl<'input> antlr_rust::parser_rule_context::DerefSeal for NumericContextAll<'input> {}
 
-impl<'input> KatoParserContext<'input> for NumericContextAll<'input> {}
+impl<'input> QrustParserContext<'input> for NumericContextAll<'input> {}
 
 impl<'input> Deref for NumericContextAll<'input> {
     type Target = dyn NumericContextAttrs<'input> + 'input;
@@ -2240,16 +2240,16 @@ impl<'input> Deref for NumericContextAll<'input> {
         }
     }
 }
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for NumericContextAll<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for NumericContextAll<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         self.deref().accept(visitor)
     }
 }
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for NumericContextAll<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for NumericContextAll<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().enter(listener)
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         self.deref().exit(listener)
     }
 }
@@ -2261,15 +2261,15 @@ pub struct NumericContextExt<'input> {
     ph: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserContext<'input> for NumericContext<'input> {}
+impl<'input> QrustParserContext<'input> for NumericContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for NumericContext<'input> {}
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for NumericContext<'input> {}
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for NumericContext<'input> {}
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for NumericContext<'input> {}
 
 impl<'input> CustomRuleContext<'input> for NumericContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_numeric
     }
@@ -2279,7 +2279,7 @@ antlr_rust::tid! {NumericContextExt<'a>}
 
 impl<'input> NumericContextExt<'input> {
     fn new(
-        parent: Option<Rc<dyn KatoParserContext<'input> + 'input>>,
+        parent: Option<Rc<dyn QrustParserContext<'input> + 'input>>,
         invoking_state: isize,
     ) -> Rc<NumericContextAll<'input>> {
         Rc::new(NumericContextAll::Error(
@@ -2293,7 +2293,7 @@ impl<'input> NumericContextExt<'input> {
 }
 
 pub trait NumericContextAttrs<'input>:
-    KatoParserContext<'input> + BorrowMut<NumericContextExt<'input>>
+    QrustParserContext<'input> + BorrowMut<NumericContextExt<'input>>
 {
 }
 
@@ -2302,10 +2302,10 @@ impl<'input> NumericContextAttrs<'input> for NumericContext<'input> {}
 pub type Numeric_realContext<'input> =
     BaseParserRuleContext<'input, Numeric_realContextExt<'input>>;
 
-pub trait Numeric_realContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Numeric_realContextAttrs<'input>: QrustParserContext<'input> {
     /// Retrieves first TerminalNode corresponding to token REAL
     /// Returns `None` if there is no child corresponding to token REAL
-    fn REAL(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn REAL(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -2322,28 +2322,28 @@ pub struct Numeric_realContextExt<'input> {
 
 antlr_rust::tid! {Numeric_realContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Numeric_realContext<'input> {}
+impl<'input> QrustParserContext<'input> for Numeric_realContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Numeric_realContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Numeric_realContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_numeric_real(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_numeric_real(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Numeric_realContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Numeric_realContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_numeric_real(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Numeric_realContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_numeric
     }
@@ -2380,10 +2380,10 @@ impl<'input> Numeric_realContextExt<'input> {
 pub type Numeric_integerContext<'input> =
     BaseParserRuleContext<'input, Numeric_integerContextExt<'input>>;
 
-pub trait Numeric_integerContextAttrs<'input>: KatoParserContext<'input> {
+pub trait Numeric_integerContextAttrs<'input>: QrustParserContext<'input> {
     /// Retrieves first TerminalNode corresponding to token INTEGER
     /// Returns `None` if there is no child corresponding to token INTEGER
-    fn INTEGER(&self) -> Option<Rc<TerminalNode<'input, KatoParserContextType>>>
+    fn INTEGER(&self) -> Option<Rc<TerminalNode<'input, QrustParserContextType>>>
     where
         Self: Sized,
     {
@@ -2400,28 +2400,28 @@ pub struct Numeric_integerContextExt<'input> {
 
 antlr_rust::tid! {Numeric_integerContextExt<'a>}
 
-impl<'input> KatoParserContext<'input> for Numeric_integerContext<'input> {}
+impl<'input> QrustParserContext<'input> for Numeric_integerContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for Numeric_integerContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for Numeric_integerContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_numeric_integer(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_numeric_integer(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for Numeric_integerContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for Numeric_integerContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_numeric_integer(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for Numeric_integerContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_numeric
     }
@@ -2455,7 +2455,7 @@ impl<'input> Numeric_integerContextExt<'input> {
     }
 }
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
@@ -2520,28 +2520,28 @@ pub struct MatrixContextExt<'input> {
     ph: PhantomData<&'input str>,
 }
 
-impl<'input> KatoParserContext<'input> for MatrixContext<'input> {}
+impl<'input> QrustParserContext<'input> for MatrixContext<'input> {}
 
-impl<'input, 'a> Listenable<dyn KatoListener<'input> + 'a> for MatrixContext<'input> {
-    fn enter(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+impl<'input, 'a> Listenable<dyn QrustListener<'input> + 'a> for MatrixContext<'input> {
+    fn enter(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.enter_every_rule(self);
         listener.enter_matrix(self);
     }
-    fn exit(&self, listener: &mut (dyn KatoListener<'input> + 'a)) {
+    fn exit(&self, listener: &mut (dyn QrustListener<'input> + 'a)) {
         listener.exit_matrix(self);
         listener.exit_every_rule(self);
     }
 }
 
-impl<'input, 'a> Visitable<dyn KatoVisitor<'input> + 'a> for MatrixContext<'input> {
-    fn accept(&self, visitor: &mut (dyn KatoVisitor<'input> + 'a)) {
+impl<'input, 'a> Visitable<dyn QrustVisitor<'input> + 'a> for MatrixContext<'input> {
+    fn accept(&self, visitor: &mut (dyn QrustVisitor<'input> + 'a)) {
         visitor.visit_matrix(self);
     }
 }
 
 impl<'input> CustomRuleContext<'input> for MatrixContextExt<'input> {
     type TF = LocalTokenFactory<'input>;
-    type Ctx = KatoParserContextType;
+    type Ctx = QrustParserContextType;
     fn get_rule_index(&self) -> usize {
         RULE_matrix
     }
@@ -2551,7 +2551,7 @@ antlr_rust::tid! {MatrixContextExt<'a>}
 
 impl<'input> MatrixContextExt<'input> {
     fn new(
-        parent: Option<Rc<dyn KatoParserContext<'input> + 'input>>,
+        parent: Option<Rc<dyn QrustParserContext<'input> + 'input>>,
         invoking_state: isize,
     ) -> Rc<MatrixContextAll<'input>> {
         Rc::new(BaseParserRuleContext::new_parser_ctx(
@@ -2563,7 +2563,7 @@ impl<'input> MatrixContextExt<'input> {
 }
 
 pub trait MatrixContextAttrs<'input>:
-    KatoParserContext<'input> + BorrowMut<MatrixContextExt<'input>>
+    QrustParserContext<'input> + BorrowMut<MatrixContextExt<'input>>
 {
     fn term_all(&self) -> Vec<Rc<TermContextAll<'input>>>
     where
@@ -2581,7 +2581,7 @@ pub trait MatrixContextAttrs<'input>:
 
 impl<'input> MatrixContextAttrs<'input> for MatrixContext<'input> {}
 
-impl<'input, I, H> KatoParser<'input, I, H>
+impl<'input, I, H> QrustParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
     H: ErrorStrategy<'input, BaseParserType<'input, I>>,
